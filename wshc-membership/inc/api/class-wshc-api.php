@@ -91,9 +91,18 @@ class WSHC_API {
 		$otp = sprintf( '%06d', mt_rand( 100000, 999999 ) );
 		update_user_meta( $user_id, 'wshc_activation_otp', $otp );
 
-		// Send verification email
-		$msg  = sprintf( __( 'Your WSHC activation code is: %s', 'wshc-membership' ), $otp );
-		wp_mail( $email, __( 'WSHC Account Activation OTP', 'wshc-membership' ), $msg );
+		// Send institutional branded verification email
+		$subject = __( 'WSHC Account Activation - One-Time Password', 'wshc-membership' );
+		$msg  = "<html><body style='font-family: sans-serif; color: #000; padding: 40px; background: #f9f9f9;'>";
+		$msg .= "<div style='background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);'>";
+		$msg .= "<h2 style='text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid #000; padding-bottom: 20px;'>World Sports Health Council</h2>";
+		$msg .= "<p style='font-size: 16px;'>" . __( 'Welcome to the WSHC Global Portal. Please use the following One-Time Password to activate your professional account:', 'wshc-membership' ) . "</p>";
+		$msg .= "<div style='background: #000; color: #fff; padding: 20px; font-size: 32px; font-weight: 800; text-align: center; letter-spacing: 10px; margin: 30px 0;'>{$otp}</div>";
+		$msg .= "<p style='font-size: 12px; color: #888;'>" . __( 'This code is time-sensitive and valid for institutional verification only.', 'wshc-membership' ) . "</p>";
+		$msg .= "</div></body></html>";
+
+		$headers = array('Content-Type: text/html; charset=UTF-8');
+		wp_mail( $email, $subject, $msg, $headers );
 
 		wp_send_json_success( array(
 			'message' => __( 'Registration successful. Please enter the OTP sent to your email.', 'wshc-membership' ),
