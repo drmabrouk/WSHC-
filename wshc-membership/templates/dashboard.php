@@ -1,7 +1,7 @@
 <div id="wshc-dashboard-root" class="wshc-monochrome">
     <!-- Mobile Header -->
     <header class="wshc-mobile-nav">
-        <div class="wshc-brand">WSHC</div>
+        <div class="wshc-brand"><?php echo current_user_can( 'manage_wshc_users' ) ? __( 'System Dashboard', 'wshc-membership' ) : __( 'My Account', 'wshc-membership' ); ?></div>
         <button id="wshc-hamburger">
             <span></span>
             <span></span>

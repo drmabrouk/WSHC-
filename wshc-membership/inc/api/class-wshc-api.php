@@ -19,6 +19,7 @@ class WSHC_API {
 		add_action( 'wp_ajax_nopriv_wshc_login', array( $this, 'ajax_login' ) );
 		add_action( 'wp_ajax_nopriv_wshc_register', array( $this, 'ajax_register' ) );
 		add_action( 'wp_ajax_nopriv_wshc_recover', array( $this, 'ajax_recover' ) );
+		add_action( 'wp_ajax_nopriv_wshc_verify_otp', array( $this, 'ajax_verify_otp' ) );
 	}
 
 	public function ajax_login() {
@@ -27,7 +28,7 @@ class WSHC_API {
 		$credentials = array(
 			'user_login'    => sanitize_text_field( $_POST['username'] ),
 			'user_password' => $_POST['password'],
-			'remember'      => true,
+			'remember'      => isset( $_POST['remember'] ) && 'true' === $_POST['remember'],
 		);
 
 		$user = wp_signon( $credentials, false );
@@ -76,15 +77,36 @@ class WSHC_API {
 
 		// Initial state: Pending
 		update_user_meta( $user_id, 'wshc_verified', 0 );
-		$code = wp_generate_password( 20, false );
-		update_user_meta( $user_id, 'wshc_activation_code', $code );
+		$otp = sprintf( '%06d', mt_rand( 100000, 999999 ) );
+		update_user_meta( $user_id, 'wshc_activation_otp', $otp );
 
 		// Send verification email
-		$link = add_query_arg( array( 'wshc_action' => 'verify', 'code' => $code, 'u' => $user_id ), home_url( '/login-register' ) );
-		$msg  = sprintf( __( 'Please verify your account here: %s', 'wshc-membership' ), $link );
-		wp_mail( $email, __( 'Verify your WSHC Account', 'wshc-membership' ), $msg );
+		$msg  = sprintf( __( 'Your WSHC activation code is: %s', 'wshc-membership' ), $otp );
+		wp_mail( $email, __( 'WSHC Account Activation OTP', 'wshc-membership' ), $msg );
 
-		wp_send_json_success( array( 'message' => __( 'Registration successful. Check your email to verify.', 'wshc-membership' ) ) );
+		wp_send_json_success( array(
+			'message' => __( 'Registration successful. Please enter the OTP sent to your email.', 'wshc-membership' ),
+			'user_id' => $user_id
+		) );
+	}
+
+	public function ajax_verify_otp() {
+		check_ajax_referer( 'wshc_nonce', 'security' );
+
+		$user_id = absint( $_POST['user_id'] );
+		$otp     = sanitize_text_field( $_POST['otp'] );
+		$saved   = get_user_meta( $user_id, 'wshc_activation_otp', true );
+
+		if ( $otp && $otp === $saved ) {
+			update_user_meta( $user_id, 'wshc_verified', 1 );
+			delete_user_meta( $user_id, 'wshc_activation_otp' );
+			$user = new WP_User( $user_id );
+			$user->set_role( 'visitor' );
+
+			wp_send_json_success( array( 'message' => __( 'Account activated! You can now login.', 'wshc-membership' ) ) );
+		} else {
+			wp_send_json_error( array( 'message' => __( 'Invalid OTP. Please try again.', 'wshc-membership' ) ) );
+		}
 	}
 
 	public function ajax_recover() {

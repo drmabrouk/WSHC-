@@ -73,6 +73,43 @@
     border-color: var(--wshc-black);
 }
 
+.wshc-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.wshc-toggle-password {
+    position: absolute;
+    right: 12px;
+    cursor: pointer;
+    color: var(--wshc-gray-dark);
+}
+
+.wshc-toggle-password:hover {
+    color: var(--wshc-black);
+}
+
+.wshc-checkbox-field label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-transform: none;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.wshc-checkbox-field input {
+    width: auto;
+}
+
+.wshc-view-desc {
+    text-align: center;
+    font-size: 14px;
+    color: var(--wshc-gray-dark);
+    margin-bottom: 25px;
+}
+
 .wshc-btn-primary {
     width: 100%;
     padding: 15px;

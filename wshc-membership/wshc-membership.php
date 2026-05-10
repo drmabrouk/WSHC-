@@ -64,12 +64,16 @@ class WSHC_Membership {
 
 	private function create_required_pages() {
 		$pages = array(
-			'login-register' => array(
-				'title'   => 'Login / Register',
+			'login' => array(
+				'title'   => 'Login',
 				'content' => '[wshc_auth]',
 			),
-			'dashboard'      => array(
-				'title'   => 'Dashboard',
+			'account' => array(
+				'title'   => 'My Account',
+				'content' => '[wshc_dashboard]',
+			),
+			'dashboard' => array(
+				'title'   => 'System Dashboard',
 				'content' => '[wshc_dashboard]',
 			),
 		);
@@ -91,8 +95,12 @@ class WSHC_Membership {
 		global $post;
 		if ( ! is_a( $post, 'WP_Post' ) ) return;
 
+		// SEO Optimized Slugs / Route Detection
+		$is_auth_page = has_shortcode( $post->post_content, 'wshc_auth' ) || is_page( 'login' ) || is_page( 'auth' );
+		$is_dashboard_page = has_shortcode( $post->post_content, 'wshc_dashboard' ) || is_page( 'account' ) || is_page( 'dashboard' );
+
 		// Selective loading
-		if ( has_shortcode( $post->post_content, 'wshc_auth' ) || has_shortcode( $post->post_content, 'wshc_dashboard' ) ) {
+		if ( $is_auth_page || $is_dashboard_page ) {
 			wp_enqueue_style( 'dashicons' );
 			wp_enqueue_style( 'wshc-main', WSHC_URL . 'assets/css/wshc-main.css', array(), WSHC_VERSION );
 			
