@@ -52,6 +52,7 @@ class WSHC_Admin_Controller {
 				'ID'            => $user->ID,
 				'display_name'  => $user->display_name,
 				'user_email'    => $user->user_email,
+				'user_login'    => $user->user_login,
 				'role'          => $user->roles[0],
 				'role_label'    => ucfirst( str_replace( '_', ' ', $user->roles[0] ) ),
 				'registered'    => $user->user_registered,
@@ -80,6 +81,7 @@ class WSHC_Admin_Controller {
 		$role    = sanitize_text_field( $_POST['role'] );
 		$status  = sanitize_text_field( $_POST['status'] );
 		$id_verified = absint( $_POST['id_verified'] );
+		$username    = sanitize_user( $_POST['username'] );
 		$registered  = sanitize_text_field( $_POST['user_registered'] );
         $credentials = sanitize_textarea_field( $_POST['credentials'] );
 
@@ -118,14 +120,18 @@ class WSHC_Admin_Controller {
         // Update Credentials
         update_user_meta( $user_id, 'wshc_credentials', $credentials );
 
-		// Update Registration Date
-		if ( $registered ) {
-			global $wpdb;
-			$wpdb->update(
-				$wpdb->users,
-				array( 'user_registered' => $registered ),
-				array( 'ID' => $user_id )
-			);
+		// Update Username & Registration Date
+		global $wpdb;
+		$update_fields = array();
+		if ( $registered ) $update_fields['user_registered'] = $registered;
+		if ( $username && $username !== $user->user_login ) {
+			if ( ! username_exists( $username ) ) {
+				$update_fields['user_login'] = $username;
+			}
+		}
+
+		if ( ! empty( $update_fields ) ) {
+			$wpdb->update( $wpdb->users, $update_fields, array( 'ID' => $user_id ) );
 		}
 
 		wp_send_json_success( array( 'message' => __( 'User updated successfully.', 'wshc-membership' ) ) );
