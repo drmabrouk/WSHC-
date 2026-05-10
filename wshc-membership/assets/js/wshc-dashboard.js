@@ -156,7 +156,9 @@ jQuery(document).ready(function($) {
                                         <td><span class="wshc-badge status-${user.status.toLowerCase()}">${user.status}</span></td>
                                         <td>${user.registered}</td>
                                         <td>
-                                            <button class="wshc-btn-small wshc-edit-user" data-user='${userJson}'>Edit</button>
+                                            <button class="wshc-btn-action wshc-edit-user" data-user='${userJson}' title="Edit Profile">Edit</button>
+                                            <button class="wshc-btn-action wshc-elevate-user" data-id="${user.ID}" title="Elevate Role">Elevate</button>
+                                            <button class="wshc-btn-action wshc-suspend-user" data-id="${user.ID}" title="Suspend Account">Suspend</button>
                                         </td>
                                     </tr>
                                 `;
