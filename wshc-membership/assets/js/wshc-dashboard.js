@@ -110,6 +110,32 @@ jQuery(document).ready(function($) {
                     setTimeout(() => $(this).text('Copy Link'), 2000);
                 });
             });
+
+            // Settings: Toggle Modal
+            $(document).on('click', '#wshc-settings-toggle', function() {
+                $('#wshc-settings-modal').fadeIn(200);
+            });
+
+            $(document).on('click', '#wshc-settings-close', function() {
+                $('#wshc-settings-modal').fadeOut(200);
+            });
+
+            // Settings: Bio Character Counter
+            $(document).on('input', '#wshc-bio-field', function() {
+                const count = $(this).val().length;
+                $('#wshc-bio-count').text(count);
+                if (count > 150) {
+                    $(this).addClass('error');
+                } else {
+                    $(this).removeClass('error');
+                }
+            });
+
+            // Settings: Submit
+            $(document).on('submit', '#wshc-global-settings-form', function(e) {
+                e.preventDefault();
+                self.saveGlobalSettings($(this));
+            });
         },
 
         handleInitialView: function() {
@@ -253,6 +279,27 @@ jQuery(document).ready(function($) {
                         alert(response.data.message);
                     }
                     $btn.prop('disabled', false).text('Save Changes');
+                }
+            });
+        },
+
+        saveGlobalSettings: function($form) {
+            const self = this;
+            const $btn = $form.find('button[type="submit"]');
+            $btn.prop('disabled', true).text('Saving...');
+
+            $.ajax({
+                url: wshc_vars.ajax_url,
+                type: 'POST',
+                data: $form.serialize() + '&action=wshc_save_global_settings&security=' + wshc_vars.nonce,
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.data.message);
+                        location.reload(); // Refresh to update display names/headers
+                    } else {
+                        alert(response.data.message);
+                    }
+                    $btn.prop('disabled', false).text('Save All Changes');
                 }
             });
         },

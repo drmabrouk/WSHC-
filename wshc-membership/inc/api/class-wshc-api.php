@@ -114,7 +114,12 @@ class WSHC_API {
 			$user = new WP_User( $user_id );
 			$user->set_role( 'visitor' );
 
-			wp_send_json_success( array( 'message' => __( 'Account activated! You can now login.', 'wshc-membership' ) ) );
+			// Silent Login for Instant Onboarding
+			wp_clear_auth_cookie();
+			wp_set_current_user( $user_id );
+			wp_set_auth_cookie( $user_id, true );
+
+			wp_send_json_success( array( 'message' => __( 'Account activated! Redirecting to portal...', 'wshc-membership' ) ) );
 		} else {
 			wp_send_json_error( array( 'message' => __( 'Invalid OTP. Please try again.', 'wshc-membership' ) ) );
 		}
