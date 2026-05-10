@@ -6,67 +6,81 @@
     <?php wp_head(); ?>
     <style>
         .wshc-public-profile {
-            max-width: 800px;
+            max-width: 900px;
             margin: 60px auto;
-            padding: 40px;
+            padding: 50px;
             background: #fff;
-            border: 1px solid #E0E0E0;
+            border: 1px solid #000;
         }
         .wshc-profile-header {
             display: flex;
             align-items: center;
-            gap: 30px;
-            margin-bottom: 40px;
-            border-bottom: 2px solid #000;
-            padding-bottom: 30px;
+            gap: 40px;
+            margin-bottom: 50px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 40px;
         }
         .wshc-profile-avatar img {
-            width: 120px;
-            height: 120px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #000;
+            border: 1px solid #000;
         }
         .wshc-profile-info h1 {
             margin: 0 0 10px;
-            font-size: 32px;
+            font-size: 36px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            font-weight: 800;
         }
         .wshc-profile-role {
             display: inline-block;
-            padding: 4px 12px;
+            padding: 4px 14px;
             background: #FF4D4D;
             color: #fff;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
-            border-radius: 20px;
+            letter-spacing: 1px;
+            border-radius: 4px;
         }
         .wshc-profile-body h3 {
             text-transform: uppercase;
             font-size: 14px;
-            letter-spacing: 1.5px;
-            margin-bottom: 15px;
-            color: #666;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            border-left: 4px solid #000;
+            padding-left: 15px;
+            font-weight: 700;
         }
         .wshc-profile-section {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
-        .wshc-profile-bio {
-            line-height: 1.6;
-            font-size: 16px;
+        .wshc-content-block {
+            line-height: 1.8;
+            font-size: 15px;
+            color: #333;
         }
         .wshc-meta-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            background: #f9f9f9;
+            padding: 30px;
+            border: 1px solid #eee;
         }
         .wshc-meta-item strong {
             display: block;
-            font-size: 11px;
+            font-size: 10px;
             text-transform: uppercase;
-            color: #999;
+            color: #888;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        .wshc-meta-item span {
+            font-weight: 600;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -79,7 +93,7 @@
                     if ( $avatar_url ) {
                         echo '<img src="' . esc_url( $avatar_url ) . '" />';
                     } else {
-                        echo get_avatar( $profile_user->ID, 120 );
+                        echo get_avatar( $profile_user->ID, 140 );
                     }
                 ?>
             </div>
@@ -90,37 +104,54 @@
         </div>
 
         <div class="wshc-profile-body">
-            <?php if ( $bio = get_user_meta( $profile_user->ID, 'description', true ) ) : ?>
-                <div class="wshc-profile-section">
-                    <h3><?php _e( 'Professional Biography', 'wshc-membership' ); ?></h3>
-                    <div class="wshc-profile-bio"><?php echo wpautop( esc_html( $bio ) ); ?></div>
+            <!-- Professional Background -->
+            <div class="wshc-profile-section">
+                <h3><?php _e( 'Professional Background', 'wshc-membership' ); ?></h3>
+                <div class="wshc-content-block">
+                    <?php
+                        $bio = get_user_meta( $profile_user->ID, 'description', true );
+                        echo $bio ? wpautop( esc_html( $bio ) ) : __( 'Information pending.', 'wshc-membership' );
+                    ?>
                 </div>
-            <?php endif; ?>
+            </div>
 
-            <div class="wshc-meta-grid">
-                <?php if ( $license = get_user_meta( $profile_user->ID, 'wshc_license_number', true ) ) : ?>
+            <!-- Academic Portfolio -->
+            <div class="wshc-profile-section">
+                <h3><?php _e( 'Academic Portfolio', 'wshc-membership' ); ?></h3>
+                <div class="wshc-meta-grid">
                     <div class="wshc-meta-item">
-                        <strong><?php _e( 'License Number', 'wshc-membership' ); ?></strong>
-                        <?php echo esc_html( $license ); ?>
+                        <strong><?php _e( 'Degree', 'wshc-membership' ); ?></strong>
+                        <span><?php echo esc_html( get_user_meta( $profile_user->ID, 'wshc_academic_degree', true ) ?: 'N/A' ); ?></span>
                     </div>
-                <?php endif; ?>
-
-                <?php if ( $institution = get_user_meta( $profile_user->ID, 'wshc_institution', true ) ) : ?>
+                    <div class="wshc-meta-item">
+                        <strong><?php _e( 'Specialization', 'wshc-membership' ); ?></strong>
+                        <span><?php echo esc_html( get_user_meta( $profile_user->ID, 'wshc_specialization', true ) ?: 'N/A' ); ?></span>
+                    </div>
+                    <div class="wshc-meta-item">
+                        <strong><?php _e( 'License No.', 'wshc-membership' ); ?></strong>
+                        <span><?php echo esc_html( get_user_meta( $profile_user->ID, 'wshc_license_number', true ) ?: 'N/A' ); ?></span>
+                    </div>
                     <div class="wshc-meta-item">
                         <strong><?php _e( 'Institutional Affiliation', 'wshc-membership' ); ?></strong>
-                        <?php echo esc_html( $institution ); ?>
+                        <span><?php echo esc_html( get_user_meta( $profile_user->ID, 'wshc_institution', true ) ?: 'N/A' ); ?></span>
                     </div>
-                <?php endif; ?>
+                </div>
+            </div>
 
-                <div class="wshc-meta-item">
-                    <strong><?php _e( 'Member Since', 'wshc-membership' ); ?></strong>
-                    <?php echo date( 'F Y', strtotime( $profile_user->user_registered ) ); ?>
+            <!-- Scientific Contributions -->
+            <div class="wshc-profile-section">
+                <h3><?php _e( 'Scientific Contributions', 'wshc-membership' ); ?></h3>
+                <div class="wshc-content-block">
+                    <?php
+                        $contributions = get_user_meta( $profile_user->ID, 'wshc_scientific_contributions', true );
+                        echo $contributions ? wpautop( esc_html( $contributions ) ) : __( 'No scientific records found.', 'wshc-membership' );
+                    ?>
                 </div>
             </div>
         </div>
 
-        <div style="margin-top: 40px; text-align: center;">
-            <a href="<?php echo home_url(); ?>" style="color: #000; text-decoration: none; font-size: 13px; font-weight: 700; text-transform: uppercase;">&larr; <?php _e( 'Return to WSHC Portal', 'wshc-membership' ); ?></a>
+        <div style="margin-top: 60px; text-align: center; border-top: 1px solid #eee; padding-top: 30px;">
+            <a href="<?php echo home_url(); ?>" style="color: #000; text-decoration: none; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">&larr; <?php _e( 'Return to WSHC Global Portal', 'wshc-membership' ); ?></a>
         </div>
     </div>
     <?php wp_footer(); ?>
