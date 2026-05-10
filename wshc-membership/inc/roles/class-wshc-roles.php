@@ -38,6 +38,7 @@ class WSHC_Roles {
 			$capabilities = array( 'read' => true );
 			if ( $role_id === 'system_administrator' ) {
 				$capabilities['manage_options'] = true;
+				$capabilities['manage_wshc_users'] = true;
 			}
 			add_role( $role_id, $name, $capabilities );
 		}
