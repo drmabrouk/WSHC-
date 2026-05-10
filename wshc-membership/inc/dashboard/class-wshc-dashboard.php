@@ -118,22 +118,27 @@ class WSHC_Dashboard {
 
 		$view = isset( $_POST['view'] ) ? sanitize_text_field( $_POST['view'] ) : 'overview';
 
-		// Validate view access
-		$menu_items = $this->get_menu_items();
-		$allowed_views = array_keys( $menu_items['primary'] );
-		if ( isset( $menu_items['professional'] ) ) {
-			$allowed_views = array_merge( $allowed_views, array_keys( $menu_items['professional'] ) );
-		}
-		if ( isset( $menu_items['management'] ) ) {
-			$allowed_views = array_merge( $allowed_views, array_keys( $menu_items['management'] ) );
+		// Strict Template Mapping
+		$template_map = array(
+			'overview'           => 'modules/overview',
+			'profile'            => 'modules/profile',
+			'credentials'        => 'modules/credentials',
+			'help'               => 'modules/help',
+			'scientific-reports' => 'modules/scientific-reports',
+			'board-resources'    => 'modules/board-resources',
+			'user-directory'     => 'modules/admin/user-list',
+			'system-logs'        => 'modules/admin/logs',
+			'global-settings'    => 'modules/admin/settings',
+		);
+
+		if ( ! isset( $template_map[ $view ] ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid view mapping.', 'wshc-membership' ) ) );
 		}
 
-		if ( ! in_array( $view, $allowed_views ) ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid view.', 'wshc-membership' ) ) );
-		}
+		$template_path = $template_map[ $view ];
 
 		ob_start();
-		$this->get_template( "dashboard-{$view}", array(
+		$this->get_template( $template_path, array(
 			'current_user' => wp_get_current_user(),
 		) );
 		$html = ob_get_clean();
