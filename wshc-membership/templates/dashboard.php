@@ -13,8 +13,11 @@
         </div>
         <div class="wshc-top-bar-right">
             <div class="wshc-user-menu">
-                <span class="wshc-user-name"><?php echo esc_html( $current_user->display_name ); ?></span>
-                <div class="wshc-top-avatar">
+                <div class="wshc-identity-stack">
+                    <span class="wshc-user-name"><?php echo esc_html( $current_user->display_name ); ?></span>
+                    <span class="wshc-role-capsule"><?php echo esc_html( ucfirst( str_replace( '_', ' ', $current_user->roles[0] ) ) ); ?></span>
+                </div>
+                <div class="wshc-top-avatar" id="wshc-profile-upload-trigger">
                     <?php
                         $avatar_url = get_user_meta( $current_user->ID, 'wshc_profile_image', true );
                         if ( $avatar_url ) {
@@ -23,6 +26,7 @@
                             echo get_avatar( $current_user->ID, 32 );
                         }
                     ?>
+                    <input type="file" id="wshc-profile-file" style="display:none;" accept="image/*">
                 </div>
                 <a href="<?php echo wp_logout_url( home_url() ); ?>" class="wshc-logout-icon" title="<?php _e( 'Logout', 'wshc-membership' ); ?>">
                     <span class="dashicons dashicons-log-out"></span>

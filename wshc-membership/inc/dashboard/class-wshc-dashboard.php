@@ -79,11 +79,11 @@ class WSHC_Dashboard {
 			$items['professional'] = $professional_tools;
 		}
 
-		// Management Group (Strictly for Admins/General Managers)
-		if ( current_user_can( 'manage_wshc_users' ) || in_array( 'general_manager', $roles ) ) {
+		// Management Group (Strictly for Admins)
+		if ( current_user_can( 'manage_wshc_users' ) ) {
 			$items['management'] = array();
 
-			// User Directory visible to General Manager and System Admin
+			// User Directory exclusive to System Admin/WP Admin
 			$items['management']['user-directory'] = array(
 				'label' => __( 'User Directory', 'wshc-membership' ),
 				'icon'  => 'dashicons-groups',
