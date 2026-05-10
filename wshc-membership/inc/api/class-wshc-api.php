@@ -20,6 +20,7 @@ class WSHC_API {
 		add_action( 'wp_ajax_nopriv_wshc_register', array( $this, 'ajax_register' ) );
 		add_action( 'wp_ajax_nopriv_wshc_recover', array( $this, 'ajax_recover' ) );
 		add_action( 'wp_ajax_nopriv_wshc_verify_otp', array( $this, 'ajax_verify_otp' ) );
+		add_action( 'wp_ajax_nopriv_wshc_check_availability', array( $this, 'ajax_check_availability' ) );
 	}
 
 	public function ajax_login() {
@@ -59,6 +60,11 @@ class WSHC_API {
 		$last_name  = sanitize_text_field( $_POST['last_name'] );
 		$password   = $_POST['password'];
 
+		// Step 2 fields
+		$degree     = sanitize_text_field( $_POST['academic_degree'] );
+		$specialization = sanitize_text_field( $_POST['specialization'] );
+		$license    = sanitize_text_field( $_POST['license_number'] );
+
 		if ( username_exists( $username ) || email_exists( $email ) ) {
 			wp_send_json_error( array( 'message' => __( 'User already exists.', 'wshc-membership' ) ) );
 		}
@@ -74,6 +80,11 @@ class WSHC_API {
 		if ( is_wp_error( $user_id ) ) {
 			wp_send_json_error( array( 'message' => $user_id->get_error_message() ) );
 		}
+
+		// Save Step 2 Metadata
+		update_user_meta( $user_id, 'wshc_academic_degree', $degree );
+		update_user_meta( $user_id, 'wshc_specialization', $specialization );
+		update_user_meta( $user_id, 'wshc_license_number', $license );
 
 		// Initial state: Pending
 		update_user_meta( $user_id, 'wshc_verified', 0 );
@@ -107,6 +118,23 @@ class WSHC_API {
 		} else {
 			wp_send_json_error( array( 'message' => __( 'Invalid OTP. Please try again.', 'wshc-membership' ) ) );
 		}
+	}
+
+	public function ajax_check_availability() {
+		check_ajax_referer( 'wshc_nonce', 'security' );
+		$type  = $_POST['type'];
+		$value = $_POST['value'];
+
+		if ( $type === 'username' ) {
+			if ( username_exists( $value ) ) {
+				wp_send_json_error( array( 'message' => __( 'Username already taken.', 'wshc-membership' ) ) );
+			}
+		} elseif ( $type === 'email' ) {
+			if ( email_exists( $value ) ) {
+				wp_send_json_error( array( 'message' => __( 'Email already registered.', 'wshc-membership' ) ) );
+			}
+		}
+		wp_send_json_success();
 	}
 
 	public function ajax_recover() {

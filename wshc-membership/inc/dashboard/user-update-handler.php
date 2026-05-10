@@ -75,10 +75,14 @@ class WSHC_User_Update_Handler {
         $user_id = get_current_user_id();
         $bio = sanitize_textarea_field( $_POST['bio'] );
         $visibility = sanitize_text_field( $_POST['visibility'] );
+        $degree = sanitize_text_field( $_POST['degree'] );
+        $specialization = sanitize_text_field( $_POST['specialization'] );
         $license = sanitize_text_field( $_POST['license'] );
         $institution = sanitize_text_field( $_POST['institution'] );
 
         update_user_meta( $user_id, 'description', $bio );
+        update_user_meta( $user_id, 'wshc_academic_degree', $degree );
+        update_user_meta( $user_id, 'wshc_specialization', $specialization );
         update_user_meta( $user_id, 'wshc_profile_visibility', $visibility );
         update_user_meta( $user_id, 'wshc_license_number', $license );
         update_user_meta( $user_id, 'wshc_institution', $institution );

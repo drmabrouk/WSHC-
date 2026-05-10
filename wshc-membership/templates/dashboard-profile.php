@@ -38,7 +38,17 @@
                     <textarea name="bio" rows="5"><?php echo esc_textarea( get_user_meta( $current_user->ID, 'description', true ) ); ?></textarea>
                 </div>
 
-                <?php if ( current_user_can( 'board_certified_member' ) || current_user_can( 'fellow' ) || current_user_can( 'manage_wshc_users' ) ) : ?>
+                <?php if ( ! in_array( 'visitor', (array) $current_user->roles ) ) : ?>
+                    <div class="wshc-field-group">
+                        <div class="wshc-field">
+                            <label><?php _e( 'Academic Degree', 'wshc-membership' ); ?></label>
+                            <input type="text" name="degree" value="<?php echo esc_attr( get_user_meta( $current_user->ID, 'wshc_academic_degree', true ) ); ?>">
+                        </div>
+                        <div class="wshc-field">
+                            <label><?php _e( 'Specialization', 'wshc-membership' ); ?></label>
+                            <input type="text" name="specialization" value="<?php echo esc_attr( get_user_meta( $current_user->ID, 'wshc_specialization', true ) ); ?>">
+                        </div>
+                    </div>
                     <div class="wshc-field-group">
                         <div class="wshc-field">
                             <label><?php _e( 'License Number', 'wshc-membership' ); ?></label>
