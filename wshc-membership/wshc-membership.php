@@ -40,12 +40,16 @@ class WSHC_Membership {
 		require_once WSHC_PATH . 'inc/api/class-wshc-api.php';
 		require_once WSHC_PATH . 'inc/auth/class-wshc-auth.php';
 		require_once WSHC_PATH . 'inc/dashboard/class-wshc-dashboard.php';
+		require_once WSHC_PATH . 'inc/dashboard/rewrite-rules.php';
+		require_once WSHC_PATH . 'inc/dashboard/user-update-handler.php';
         
         // Instantiate for hooks
         WSHC_Roles::get_instance();
         WSHC_API::get_instance();
         WSHC_Auth::get_instance();
         WSHC_Dashboard::get_instance();
+		WSHC_Rewrite_Rules::get_instance();
+		WSHC_User_Update_Handler::get_instance();
 
 		require_once WSHC_PATH . 'inc/dashboard/admin-controller.php';
 		WSHC_Admin_Controller::get_instance();

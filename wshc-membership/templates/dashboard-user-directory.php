@@ -80,6 +80,11 @@
             </div>
 
             <div class="wshc-field">
+                <label><?php _e( 'Username', 'wshc-membership' ); ?></label>
+                <input type="text" id="edit-user-login" name="username">
+            </div>
+
+            <div class="wshc-field">
                 <label><?php _e( 'Registration Date', 'wshc-membership' ); ?></label>
                 <input type="text" id="edit-user-registered" name="user_registered" placeholder="YYYY-MM-DD HH:MM:SS">
                 <small><?php _e( 'Format: YYYY-MM-DD HH:MM:SS', 'wshc-membership' ); ?></small>

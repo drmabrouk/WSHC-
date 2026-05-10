@@ -88,6 +88,28 @@ jQuery(document).ready(function($) {
                 e.preventDefault();
                 self.updateUser($(this));
             });
+
+            // Profile: Update Identity
+            $(document).on('submit', '#wshc-identity-form', function(e) {
+                e.preventDefault();
+                self.updateIdentity($(this));
+            });
+
+            // Profile: Update Meta
+            $(document).on('submit', '#wshc-profile-meta-form', function(e) {
+                e.preventDefault();
+                self.updateProfileMeta($(this));
+            });
+
+            // Profile: Copy Link
+            $(document).on('click', '#wshc-copy-link', function(e) {
+                e.preventDefault();
+                const link = $('#wshc-profile-link').val();
+                navigator.clipboard.writeText(link).then(() => {
+                    $(this).text('Copied!');
+                    setTimeout(() => $(this).text('Copy Link'), 2000);
+                });
+            });
         },
 
         handleInitialView: function() {
@@ -204,6 +226,7 @@ jQuery(document).ready(function($) {
         openModal: function(user) {
             $('#edit-user-id').val(user.ID);
             $('#edit-display-name').val(user.display_name);
+            $('#edit-user-login').val(user.user_login);
             $('#edit-user-role').val(user.role);
             $('#edit-user-status').val(user.status);
             $('#edit-user-id-verified').val(user.id_verified);
@@ -230,6 +253,38 @@ jQuery(document).ready(function($) {
                         alert(response.data.message);
                     }
                     $btn.prop('disabled', false).text('Save Changes');
+                }
+            });
+        },
+
+        updateIdentity: function($form) {
+            const self = this;
+            const $btn = $form.find('button[type="submit"]');
+            $btn.prop('disabled', true).text('Updating...');
+
+            $.ajax({
+                url: wshc_vars.ajax_url,
+                type: 'POST',
+                data: $form.serialize() + '&action=wshc_update_account_identity&security=' + wshc_vars.nonce,
+                success: function(response) {
+                    alert(response.data.message);
+                    $btn.prop('disabled', false).text('Update Identity');
+                }
+            });
+        },
+
+        updateProfileMeta: function($form) {
+            const self = this;
+            const $btn = $form.find('button[type="submit"]');
+            $btn.prop('disabled', true).text('Saving...');
+
+            $.ajax({
+                url: wshc_vars.ajax_url,
+                type: 'POST',
+                data: $form.serialize() + '&action=wshc_update_profile_meta&security=' + wshc_vars.nonce,
+                success: function(response) {
+                    alert(response.data.message);
+                    $btn.prop('disabled', false).text('Save Profile Details');
                 }
             });
         },
