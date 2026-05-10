@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="wshc-header-actions">
-                    <div class="wshc-top-avatar" id="wshc-profile-upload-trigger">
+                    <div class="wshc-top-avatar" id="wshc-header-profile-trigger">
                         <?php
                             $avatar_url = get_user_meta( $current_user->ID, 'wshc_profile_image', true );
                             if ( $avatar_url ) {
@@ -28,7 +28,6 @@
                                 echo get_avatar( $current_user->ID, 40 );
                             }
                         ?>
-                        <input type="file" id="wshc-profile-file" style="display:none;" accept="image/*">
                     </div>
 
                     <button id="wshc-settings-toggle" class="wshc-icon-btn" title="<?php _e( 'Account Settings', 'wshc-membership' ); ?>">
@@ -91,38 +90,57 @@
 <div id="wshc-settings-modal" class="wshc-modal">
     <div class="wshc-modal-content">
         <span class="wshc-modal-close" id="wshc-settings-close">&times;</span>
-        <h3><?php _e( 'Account Settings', 'wshc-membership' ); ?></h3>
+
+        <div class="wshc-modal-header">
+            <div class="wshc-modal-avatar-uploader" id="wshc-profile-upload-trigger">
+                <?php
+                    if ( $avatar_url ) {
+                        echo '<img src="' . esc_url( $avatar_url ) . '" id="wshc-modal-avatar-preview" />';
+                    } else {
+                        echo get_avatar( $current_user->ID, 100 );
+                    }
+                ?>
+                <div class="wshc-uploader-overlay"><span class="dashicons dashicons-camera"></span></div>
+                <input type="file" id="wshc-profile-file" style="display:none;" accept="image/*">
+            </div>
+            <h3><?php _e( 'Account Settings', 'wshc-membership' ); ?></h3>
+        </div>
+
         <form id="wshc-global-settings-form">
+            <!-- Row 1: First | Last Name -->
             <div class="wshc-field-group">
-                <div class="wshc-field">
-                    <label><?php _e( 'First Name', 'wshc-membership' ); ?></label>
-                    <input type="text" name="first_name" value="<?php echo esc_attr( $current_user->first_name ); ?>">
+                <div class="wshc-field wshc-floating">
+                    <input type="text" name="first_name" id="set-fname" value="<?php echo esc_attr( $current_user->first_name ); ?>" placeholder=" ">
+                    <label for="set-fname"><?php _e( 'First Name', 'wshc-membership' ); ?></label>
                 </div>
-                <div class="wshc-field">
-                    <label><?php _e( 'Last Name', 'wshc-membership' ); ?></label>
-                    <input type="text" name="last_name" value="<?php echo esc_attr( $current_user->last_name ); ?>">
+                <div class="wshc-field wshc-floating">
+                    <input type="text" name="last_name" id="set-lname" value="<?php echo esc_attr( $current_user->last_name ); ?>" placeholder=" ">
+                    <label for="set-lname"><?php _e( 'Last Name', 'wshc-membership' ); ?></label>
                 </div>
             </div>
 
-            <div class="wshc-field">
-                <label><?php _e( 'Email Address', 'wshc-membership' ); ?></label>
-                <input type="email" name="email" value="<?php echo esc_attr( $current_user->user_email ); ?>" required>
+            <!-- Row 2: Username (Full) -->
+            <div class="wshc-field wshc-floating">
+                <input type="text" name="username" id="set-user" value="<?php echo esc_attr( $current_user->user_login ); ?>" placeholder=" ">
+                <label for="set-user"><?php _e( 'Username', 'wshc-membership' ); ?></label>
+                <div id="wshc-user-avail-msg"></div>
             </div>
 
-            <div class="wshc-field">
-                <label><?php _e( 'Update Password', 'wshc-membership' ); ?></label>
-                <input type="password" name="password" placeholder="<?php _e( 'Leave blank to keep current', 'wshc-membership' ); ?>">
+            <!-- Row 3: Institution | Degree -->
+            <div class="wshc-field-group">
+                <div class="wshc-field wshc-floating">
+                    <input type="text" name="institution" id="set-inst" value="<?php echo esc_attr( get_user_meta( $current_user->ID, 'wshc_institution', true ) ); ?>" placeholder=" ">
+                    <label for="set-inst"><?php _e( 'Institution', 'wshc-membership' ); ?></label>
+                </div>
+                <div class="wshc-field wshc-floating">
+                    <input type="text" name="degree" id="set-degree" value="<?php echo esc_attr( get_user_meta( $current_user->ID, 'wshc_academic_degree', true ) ); ?>" placeholder=" ">
+                    <label for="set-degree"><?php _e( 'Academic Degree', 'wshc-membership' ); ?></label>
+                </div>
             </div>
 
-            <div class="wshc-field">
-                <label><?php _e( 'Professional Bio (150 chars max)', 'wshc-membership' ); ?></label>
-                <textarea name="bio" id="wshc-bio-field" rows="3" maxlength="150"><?php echo esc_textarea( get_user_meta( $current_user->ID, 'description', true ) ); ?></textarea>
-                <div class="wshc-char-counter"><span id="wshc-bio-count">0</span>/150</div>
-            </div>
-
-            <div class="wshc-field">
-                <label><?php _e( 'Specialization', 'wshc-membership' ); ?></label>
-                <select name="specialization">
+            <!-- Row 4: Specialization (Full) -->
+            <div class="wshc-field wshc-floating">
+                <select name="specialization" id="set-spec">
                     <?php
                         $specs = array( 'Sports Medicine', 'Athletic Training', 'Physical Therapy', 'Sports Nutrition', 'Exercise Physiology', 'Orthopedics', 'Sports Psychology' );
                         $current_spec = get_user_meta( $current_user->ID, 'wshc_specialization', true );
@@ -131,16 +149,24 @@
                         }
                     ?>
                 </select>
+                <label for="set-spec"><?php _e( 'Professional Specialization', 'wshc-membership' ); ?></label>
             </div>
 
+            <div class="wshc-field wshc-floating">
+                <textarea name="bio" id="wshc-bio-field" rows="2" maxlength="150" placeholder=" "><?php echo esc_textarea( get_user_meta( $current_user->ID, 'description', true ) ); ?></textarea>
+                <label for="wshc-bio-field"><?php _e( 'Professional Bio (150 chars max)', 'wshc-membership' ); ?></label>
+                <div class="wshc-char-counter"><span id="wshc-bio-count">0</span>/150</div>
+            </div>
+
+            <!-- Row 5: Current | New Password -->
             <div class="wshc-field-group">
-                <div class="wshc-field">
-                    <label><?php _e( 'Academic Degree', 'wshc-membership' ); ?></label>
-                    <input type="text" name="degree" value="<?php echo esc_attr( get_user_meta( $current_user->ID, 'wshc_academic_degree', true ) ); ?>">
+                <div class="wshc-field wshc-floating">
+                    <input type="password" name="current_password" id="set-curr-pass" placeholder=" ">
+                    <label for="set-curr-pass"><?php _e( 'Current Password', 'wshc-membership' ); ?></label>
                 </div>
-                <div class="wshc-field">
-                    <label><?php _e( 'Institution', 'wshc-membership' ); ?></label>
-                    <input type="text" name="institution" value="<?php echo esc_attr( get_user_meta( $current_user->ID, 'wshc_institution', true ) ); ?>">
+                <div class="wshc-field wshc-floating">
+                    <input type="password" name="new_password" id="set-new-pass" placeholder=" ">
+                    <label for="set-new-pass"><?php _e( 'New Password', 'wshc-membership' ); ?></label>
                 </div>
             </div>
 

@@ -10,7 +10,7 @@
     --wshc-gray-mid: #E0E0E0;
     --wshc-gray-dark: #666666;
     --wshc-red: #FF4D4D;
-    --wshc-border: 1px solid var(--wshc-gray-mid);
+    --wshc-border: 1px solid var(--wshc-black);
     --wshc-font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
     --sidebar-width: 220px;
 }
@@ -21,183 +21,7 @@
     background: var(--wshc-white);
 }
 
-/* Auth Center Layout - Elite Global Standard */
-#wshc-auth-root {
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #FAFAFA;
-    overflow: hidden;
-}
-
-.wshc-auth-centering {
-    width: 100%;
-    max-width: 550px;
-    padding: 20px;
-}
-
-.wshc-auth-container {
-    background: var(--wshc-white);
-    border: none;
-    padding: 50px;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-    position: relative;
-    overflow: hidden;
-}
-
-.wshc-auth-view h2 {
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 800;
-    margin-bottom: 35px;
-    font-size: 18px;
-}
-
-/* Field Design - Rounded & Subtle */
-.wshc-field {
-    margin-bottom: 20px;
-}
-
-.wshc-field label {
-    display: block;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    color: var(--wshc-gray-dark);
-    letter-spacing: 0.5px;
-}
-
-.wshc-field input, .wshc-field select, .wshc-field textarea {
-    width: 100%;
-    padding: 14px 16px;
-    border: 1px solid #EDEDED;
-    background: #FFF;
-    font-size: 14px;
-    outline: none;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    color: var(--wshc-black);
-}
-
-.wshc-field input:focus {
-    border-color: var(--wshc-black);
-}
-
-/* Grid Layout */
-.wshc-field-group {
-    display: flex;
-    gap: 15px;
-}
-
-.wshc-field-group .wshc-field {
-    flex: 1;
-}
-
-/* Internal Password Toggle */
-.wshc-password-field {
-    position: relative;
-}
-
-.wshc-toggle-password {
-    position: absolute;
-    right: 15px;
-    top: 38px; /* Adjusted for label height */
-    cursor: pointer;
-    color: #CCC;
-    transition: color 0.2s;
-    font-size: 18px;
-}
-
-.wshc-toggle-password:hover {
-    color: var(--wshc-black);
-}
-
-/* Wizard Progress */
-.wshc-progress-container {
-    height: 4px;
-    background: #F0F0F0;
-    margin: -50px -50px 40px -50px;
-}
-
-.wshc-progress-bar {
-    height: 100%;
-    background: var(--wshc-black);
-    width: 0%;
-    transition: width 0.6s cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-/* Buttons - SaaS Professional */
-.wshc-btn-primary {
-    width: 100%;
-    padding: 16px;
-    background: var(--wshc-black);
-    color: var(--wshc-white);
-    border: none;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    cursor: pointer;
-    border-radius: 10px;
-    font-size: 13px;
-    transition: opacity 0.3s;
-}
-
-.wshc-btn-primary:hover {
-    opacity: 0.9;
-}
-
-.wshc-btn-secondary {
-    width: 100%;
-    padding: 16px;
-    background: transparent;
-    color: var(--wshc-black);
-    border: 1px solid var(--wshc-black);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    cursor: pointer;
-    border-radius: 10px;
-    font-size: 13px;
-}
-
-/* Footer Links */
-.wshc-auth-footer {
-    margin-top: 30px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-.wshc-auth-footer a {
-    color: #999;
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 500;
-    transition: color 0.3s;
-}
-
-.wshc-auth-footer a:hover {
-    color: var(--wshc-black);
-}
-
-/* Loading Overlay */
-.wshc-loading-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(255,255,255,0.8);
-    z-index: 100;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Flex Layout Correction for Dashboard */
+/* Flex Layout Correction */
 .wshc-dashboard-wrapper {
     display: flex;
     min-height: calc(100vh - 70px);
@@ -210,30 +34,221 @@
     position: sticky;
     top: 70px;
     height: calc(100vh - 70px);
+    overflow-y: auto;
 }
 
 #wshc-content {
     flex: 1 1 auto;
     background: #F8F9FA;
     padding: 40px;
+    max-width: calc(100% - var(--sidebar-width));
 }
 
-.wshc-top-bar { height: 70px; background: var(--wshc-black); color: var(--wshc-white); display: flex; justify-content: space-between; align-items: center; padding: 0 30px; position: sticky; top: 0; z-index: 1001; }
-.wshc-identity-stack { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2; }
-.wshc-role-capsule { display: inline-block; padding: 2px 8px; background: var(--wshc-red); color: var(--wshc-white); font-size: 9px; font-weight: 600; text-transform: uppercase; border-radius: 4px; }
-.wshc-pro-grid { width: 100%; border-collapse: collapse; }
-.wshc-pro-grid th { text-align: left; padding: 15px; font-size: 11px; text-transform: uppercase; border-bottom: 2px solid var(--wshc-black); }
-.wshc-pro-grid td { padding: 15px; border-bottom: 1px solid #EEE; font-size: 14px; }
+/* Top Bar */
+.wshc-top-bar {
+    height: 70px;
+    background: var(--wshc-black);
+    color: var(--wshc-white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+}
+
+.wshc-top-bar-left { display: flex; align-items: center; gap: 20px; }
+.wshc-brand { font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 16px; }
+
+.wshc-user-menu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.wshc-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.wshc-identity-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.2;
+}
+
+.wshc-user-name { font-size: 14px; font-weight: 700; color: var(--wshc-white); }
+.wshc-role-capsule { display: inline-block; padding: 2px 8px; background: var(--wshc-red); color: var(--wshc-white); font-size: 9px; font-weight: 600; text-transform: uppercase; border-radius: 4px; margin-top: 3px; }
+
+.wshc-top-avatar { cursor: pointer; transition: opacity 0.2s; }
+.wshc-top-avatar:hover { opacity: 0.8; }
+.wshc-top-avatar img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1.5px solid rgba(255,255,255,0.2); }
+
+.wshc-icon-btn {
+    background: none;
+    border: none;
+    color: var(--wshc-white);
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.wshc-icon-btn:hover { opacity: 1; }
+
+.wshc-logout-icon { color: var(--wshc-white); text-decoration: none; opacity: 0.6; transition: opacity 0.3s; }
+.wshc-logout-icon:hover { opacity: 1; }
+
+/* Sidebar UI Refinement */
+.wshc-nav { padding: 10px 0; }
+.wshc-nav-group-title { padding: 20px 25px 5px; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #555; font-weight: 700; }
+.wshc-nav ul { list-style: none; padding: 0; margin: 0; }
+.wshc-nav li a {
+    display: flex;
+    align-items: center;
+    padding: 18px 25px;
+    color: #888;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s;
+    border-bottom: none !important;
+}
+
+.wshc-nav li a span.dashicons { margin-right: 15px; font-size: 18px; width: 18px; height: 18px; }
+.wshc-nav li.active a { color: var(--wshc-white); background: #111; font-weight: 700; }
+
+/* Settings Modal - Ultra Professional */
+#wshc-settings-modal .wshc-modal-content {
+    background: var(--wshc-white);
+    margin: 3vh auto;
+    padding: 0;
+    width: 600px;
+    max-width: 95%;
+    border-radius: 15px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    border: none;
+    overflow: hidden;
+}
+
+#wshc-settings-modal .wshc-modal-header {
+    background: var(--wshc-black);
+    color: var(--wshc-white);
+    padding: 40px;
+    text-align: center;
+    position: relative;
+}
+
+#wshc-settings-modal .wshc-modal-header h3 {
+    margin: 15px 0 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 16px;
+}
+
+#wshc-settings-modal form {
+    padding: 40px;
+}
+
+#wshc-settings-modal .wshc-modal-close {
+    color: var(--wshc-white);
+    top: 20px;
+    right: 20px;
+}
+
+.wshc-modal-avatar-uploader {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+.wshc-modal-avatar-uploader img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--wshc-white);
+}
+
+.wshc-uploader-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.wshc-modal-avatar-uploader:hover .wshc-uploader-overlay {
+    opacity: 1;
+}
+
+/* Floating Labels for Modal */
+#wshc-settings-modal .wshc-field.wshc-floating {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+#wshc-settings-modal .wshc-field.wshc-floating input,
+#wshc-settings-modal .wshc-field.wshc-floating select,
+#wshc-settings-modal .wshc-field.wshc-floating textarea {
+    width: 100%;
+    padding: 15px 12px;
+    border: 1px solid var(--wshc-gray-mid);
+    background: #FFF;
+    font-size: 14px;
+    outline: none;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+#wshc-settings-modal .wshc-field.wshc-floating label {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--wshc-gray-dark);
+    pointer-events: none;
+    transition: 0.2s;
+    font-size: 13px;
+    background: #FFF;
+    padding: 0 5px;
+}
+
+#wshc-settings-modal .wshc-field.wshc-floating input:focus + label,
+#wshc-settings-modal .wshc-field.wshc-floating input:not(:placeholder-shown) + label,
+#wshc-settings-modal .wshc-field.wshc-floating select + label,
+#wshc-settings-modal .wshc-field.wshc-floating textarea:focus + label,
+#wshc-settings-modal .wshc-field.wshc-floating textarea:not(:placeholder-shown) + label {
+    top: 0;
+    font-size: 10px;
+    color: var(--wshc-black);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Grid within Modal */
+.wshc-field-group { display: flex; gap: 15px; }
+.wshc-field-group .wshc-field { flex: 1; }
+
+.wshc-char-counter { text-align: right; font-size: 10px; color: var(--wshc-gray-dark); margin-top: 5px; }
+
+/* Auth and Rest maintained */
+.wshc-loading-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.7); z-index: 1000; display: flex; justify-content: center; align-items: center; }
 .spin { animation: wshc-spin 1s infinite linear; }
 @keyframes wshc-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-.wshc-dashboard-footer {
-    padding: 20px 40px;
-    text-align: center;
-    border-top: 1px solid var(--wshc-gray-mid);
-    background: var(--wshc-white);
-    font-size: 11px;
-    color: var(--wshc-gray-dark);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
+/* Pro Grid */
+.wshc-pro-grid { width: 100%; border-collapse: collapse; }
+.wshc-pro-grid th { text-align: left; padding: 15px; background: #F8F9FA; font-size: 11px; text-transform: uppercase; border-bottom: 2px solid var(--wshc-black); }
+.wshc-pro-grid td { padding: 15px; border-bottom: 1px solid #EEE; font-size: 14px; }
