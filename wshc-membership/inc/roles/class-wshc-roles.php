@@ -17,6 +17,7 @@ class WSHC_Roles {
 
 	private function __construct() {
 		add_action( 'init', array( $this, 'hide_admin_bar' ) );
+		add_filter( 'user_has_capabilities', array( $this, 'map_admin_capabilities' ), 10, 3 );
 	}
 
 	public function register_roles() {
@@ -48,6 +49,16 @@ class WSHC_Roles {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			show_admin_bar( false );
 		}
+	}
+
+	/**
+	 * Map native WP Administrator capabilities to WSHC System Administrator
+	 */
+	public function map_admin_capabilities( $allcaps, $caps, $args ) {
+		if ( isset( $allcaps['manage_options'] ) && $allcaps['manage_options'] ) {
+			$allcaps['manage_wshc_users'] = true;
+		}
+		return $allcaps;
 	}
     
     public function get_hierarchy() {

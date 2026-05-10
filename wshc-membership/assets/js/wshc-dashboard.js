@@ -56,6 +56,28 @@ jQuery(document).ready(function($) {
                 self.openModal(userData);
             });
 
+            // User Directory: Quick Elevate
+            $(document).on('click', '.wshc-elevate-user', function(e) {
+                e.preventDefault();
+                const $btn = $(this);
+                const userId = $btn.data('id');
+                const $row = $btn.closest('tr');
+                const user = JSON.parse($btn.siblings('.wshc-edit-user').attr('data-user'));
+                self.openModal(user);
+            });
+
+            // User Directory: Quick Suspend
+            $(document).on('click', '.wshc-suspend-user', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to suspend this user?')) {
+                    const userId = $(this).data('id');
+                    self.updateUserAjax({
+                        user_id: userId,
+                        status: 'Pending'
+                    });
+                }
+            });
+
             // Modal: Close
             $(document).on('click', '.wshc-modal-close', function() {
                 $('#wshc-user-modal').fadeOut();
@@ -208,6 +230,26 @@ jQuery(document).ready(function($) {
                         alert(response.data.message);
                     }
                     $btn.prop('disabled', false).text('Save Changes');
+                }
+            });
+        },
+
+        updateUserAjax: function(data) {
+            const self = this;
+            $.ajax({
+                url: wshc_vars.ajax_url,
+                type: 'POST',
+                data: $.extend(data, {
+                    action: 'wshc_admin_update_user',
+                    security: wshc_vars.nonce
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.data.message);
+                        self.loadUsers($('.wshc-pagination a.active').data('page') || 1);
+                    } else {
+                        alert(response.data.message);
+                    }
                 }
             });
         },

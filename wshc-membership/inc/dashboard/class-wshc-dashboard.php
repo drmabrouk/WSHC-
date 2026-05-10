@@ -35,6 +35,9 @@ class WSHC_Dashboard {
 	}
 
 	private function get_menu_items() {
+		$user = wp_get_current_user();
+		$roles = (array) $user->roles;
+
 		$items = array(
 			'primary' => array(
 				'overview' => array(
@@ -52,21 +55,51 @@ class WSHC_Dashboard {
 			),
 		);
 
-		if ( current_user_can( 'manage_wshc_users' ) ) {
-			$items['management'] = array(
-				'user-directory' => array(
-					'label' => __( 'User Directory', 'wshc-membership' ),
-					'icon'  => 'dashicons-groups',
-				),
-				'system-logs' => array(
+		// Professional Tools based on Role
+		$professional_tools = array();
+
+		// Scientific Researcher and above
+		$research_roles = array( 'scientific_researcher', 'board_certified_member', 'fellow', 'institutional_partner', 'chairman_scientific_committee', 'regional_director', 'general_manager', 'system_administrator', 'administrator' );
+		if ( array_intersect( $roles, $research_roles ) ) {
+			$professional_tools['scientific-reports'] = array(
+				'label' => __( 'Scientific Reports', 'wshc-membership' ),
+				'icon'  => 'dashicons-welcome-learn-more',
+			);
+		}
+
+		// Board Member specific
+		if ( in_array( 'board_certified_member', $roles ) ) {
+			$professional_tools['board-resources'] = array(
+				'label' => __( 'Board Resources', 'wshc-membership' ),
+				'icon'  => 'dashicons-category',
+			);
+		}
+
+		if ( ! empty( $professional_tools ) ) {
+			$items['professional'] = $professional_tools;
+		}
+
+		// Management Group (Strictly for Admins/General Managers)
+		if ( current_user_can( 'manage_wshc_users' ) || in_array( 'general_manager', $roles ) ) {
+			$items['management'] = array();
+
+			// User Directory visible to General Manager and System Admin
+			$items['management']['user-directory'] = array(
+				'label' => __( 'User Directory', 'wshc-membership' ),
+				'icon'  => 'dashicons-groups',
+			);
+
+			// System Admin exclusive modules
+			if ( current_user_can( 'manage_wshc_users' ) ) {
+				$items['management']['system-logs'] = array(
 					'label' => __( 'System Logs', 'wshc-membership' ),
 					'icon'  => 'dashicons-list-view',
-				),
-				'global-settings' => array(
+				);
+				$items['management']['global-settings'] = array(
 					'label' => __( 'Global Settings', 'wshc-membership' ),
 					'icon'  => 'dashicons-admin-generic',
-				),
-			);
+				);
+			}
 		}
 
 		return $items;
@@ -83,7 +116,13 @@ class WSHC_Dashboard {
 
 		// Validate view access
 		$menu_items = $this->get_menu_items();
-		$allowed_views = array_merge( array_keys( $menu_items['primary'] ), isset( $menu_items['management'] ) ? array_keys( $menu_items['management'] ) : array() );
+		$allowed_views = array_keys( $menu_items['primary'] );
+		if ( isset( $menu_items['professional'] ) ) {
+			$allowed_views = array_merge( $allowed_views, array_keys( $menu_items['professional'] ) );
+		}
+		if ( isset( $menu_items['management'] ) ) {
+			$allowed_views = array_merge( $allowed_views, array_keys( $menu_items['management'] ) );
+		}
 
 		if ( ! in_array( $view, $allowed_views ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid view.', 'wshc-membership' ) ) );

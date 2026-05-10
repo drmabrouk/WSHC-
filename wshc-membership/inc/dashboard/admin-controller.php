@@ -108,6 +108,10 @@ class WSHC_Admin_Controller {
 		}
 
 		// Update Status (Verification)
+		$old_status = get_user_meta( $user_id, 'wshc_verified', true ) ? 'Verified' : 'Pending';
+		if ( $old_status !== $status ) {
+			$this->log_action( sprintf( 'Status changed from %s to %s', $old_status, $status ), $user_id );
+		}
 		update_user_meta( $user_id, 'wshc_verified', $status === 'Verified' ? 1 : 0 );
 		update_user_meta( $user_id, 'wshc_id_verified', $id_verified );
 
