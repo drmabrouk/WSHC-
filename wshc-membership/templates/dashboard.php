@@ -98,9 +98,11 @@
 <!-- Settings Modal -->
 <div id="wshc-settings-modal" class="wshc-modal" style="display:none;">
     <div class="wshc-modal-content">
-        <span class="wshc-modal-close" id="wshc-settings-close">&times;</span>
+        <button class="wshc-modal-close-circular" id="wshc-settings-close" title="<?php _e( 'Close', 'wshc-membership' ); ?>">
+            <span class="dashicons dashicons-no-alt"></span>
+        </button>
 
-        <div class="wshc-modal-header">
+        <div class="wshc-modal-header compact">
             <div class="wshc-modal-avatar-uploader" id="wshc-profile-upload-trigger">
                 <?php
                     if ( $avatar_url ) {
