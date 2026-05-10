@@ -45,6 +45,16 @@
                         <h2><?php _e( 'Account Setup', 'wshc-membership' ); ?></h2>
                         <div class="wshc-field-group">
                             <div class="wshc-field">
+                                <label><?php _e( 'First Name', 'wshc-membership' ); ?></label>
+                                <input type="text" name="first_name" required>
+                            </div>
+                            <div class="wshc-field">
+                                <label><?php _e( 'Last Name', 'wshc-membership' ); ?></label>
+                                <input type="text" name="last_name" required>
+                            </div>
+                        </div>
+                        <div class="wshc-field-group">
+                            <div class="wshc-field">
                                 <label><?php _e( 'Username', 'wshc-membership' ); ?></label>
                                 <input type="text" name="username" required>
                             </div>
@@ -96,7 +106,7 @@
                             </div>
                             <div class="wshc-field">
                                 <label><?php _e( 'License Number', 'wshc-membership' ); ?></label>
-                                <input type="text" name="license_number">
+                                <input type="text" name="license">
                             </div>
                         </div>
                         <div class="wshc-field">

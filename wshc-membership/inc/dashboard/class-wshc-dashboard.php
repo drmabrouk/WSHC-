@@ -52,6 +52,10 @@ class WSHC_Dashboard {
 					'label' => __( 'My Credentials', 'wshc-membership' ),
 					'icon'  => 'dashicons-awards',
 				),
+				'help' => array(
+					'label' => __( 'Institutional Help', 'wshc-membership' ),
+					'icon'  => 'dashicons-editor-help',
+				),
 			),
 		);
 

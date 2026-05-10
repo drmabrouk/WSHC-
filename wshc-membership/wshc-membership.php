@@ -1,10 +1,14 @@
 <?php
 /**
  * Plugin Name: WSHC Membership & Professional Dashboard
- * Description: Modular, high-tier membership system for the World Sports Health Council.
- * Version: 2.0.0
- * Author: Jules
+ * Description: Developed by the World Sports Health Council (WSHC), the leading global authority in Sports Health and Medical Excellence. This plugin serves as the digital infrastructure for academic verification, professional certification, and scientific research management, bridging the gap between global health standards and digital innovation.
+ * Version: 2.0.1
+ * Author: World Sports Health Council (WSHC)
+ * Author URI: https://www.wshcouncil.org
+ * Plugin URI: https://www.wshcouncil.org
  * Text Domain: wshc-membership
+ * Requires at least: 6.0
+ * Requires PHP: 8.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -12,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define Constants
-define( 'WSHC_VERSION', '2.0.0' );
+define( 'WSHC_VERSION', '2.0.1' );
 define( 'WSHC_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WSHC_URL', plugin_dir_url( __FILE__ ) );
 
@@ -50,15 +54,14 @@ class WSHC_Membership {
         WSHC_Dashboard::get_instance();
 		WSHC_Rewrite_Rules::get_instance();
 		WSHC_User_Update_Handler::get_instance();
-
-		require_once WSHC_PATH . 'inc/dashboard/admin-controller.php';
-		WSHC_Admin_Controller::get_instance();
 	}
 
 	private function init_hooks() {
+		add_action( 'init', array( $this, 'load_admin_controller' ) );
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_filter( 'wp_nav_menu_items', array( $this, 'add_auth_links_to_menu' ), 10, 2 );
+		add_action( 'send_headers', array( $this, 'send_security_headers' ) );
 
 		// Institutional Branding for Emails
 		add_filter( 'wp_mail_from', array( $this, 'set_mail_from' ) );
@@ -139,6 +142,22 @@ class WSHC_Membership {
 
 	public function set_mail_from_name( $name ) {
 		return 'World Sports Health Council (WSHC)';
+	}
+
+	public function send_security_headers() {
+		if ( ! is_admin() ) {
+			header( 'X-Content-Type-Options: nosniff' );
+			header( 'X-Frame-Options: SAMEORIGIN' );
+			header( 'X-XSS-Protection: 1; mode=block' );
+			header( 'Referrer-Policy: strict-origin-when-cross-origin' );
+		}
+	}
+
+	public function load_admin_controller() {
+		if ( current_user_can( 'manage_wshc_users' ) ) {
+			require_once WSHC_PATH . 'inc/dashboard/admin-controller.php';
+			WSHC_Admin_Controller::get_instance();
+		}
 	}
 
 	public function add_auth_links_to_menu( $items, $args ) {
