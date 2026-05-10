@@ -46,6 +46,9 @@ class WSHC_Membership {
         WSHC_API::get_instance();
         WSHC_Auth::get_instance();
         WSHC_Dashboard::get_instance();
+
+		require_once WSHC_PATH . 'inc/dashboard/admin-controller.php';
+		WSHC_Admin_Controller::get_instance();
 	}
 
 	private function init_hooks() {
@@ -102,6 +105,11 @@ class WSHC_Membership {
 
             if ( has_shortcode( $post->post_content, 'wshc_dashboard' ) ) {
                 wp_enqueue_script( 'wshc-dashboard', WSHC_URL . 'assets/js/wshc-dashboard.js', array( 'jquery' ), WSHC_VERSION, true );
+				wp_localize_script( 'wshc-dashboard', 'wshc_vars', array(
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+					'nonce'    => wp_create_nonce( 'wshc_nonce' ),
+					'dashboard_url' => home_url( '/dashboard' )
+				) );
             }
 		}
 	}

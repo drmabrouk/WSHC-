@@ -17,6 +17,7 @@ class WSHC_Dashboard {
 
 	private function __construct() {
 		add_shortcode( 'wshc_dashboard', array( $this, 'render_dashboard' ) );
+		add_action( 'wp_ajax_wshc_load_view', array( $this, 'ajax_load_view' ) );
 	}
 
 	public function render_dashboard() {
@@ -33,47 +34,67 @@ class WSHC_Dashboard {
 	}
 
 	private function get_menu_items() {
-		$user = wp_get_current_user();
-		$roles = $user->roles;
-
-		$all_items = array(
-			'overview' => array(
-				'label' => 'Dashboard',
-				'icon'  => 'dashicons-dashboard',
-				'roles' => array( 'all' ),
-			),
-			'profile' => array(
-				'label' => 'My Profile',
-				'icon'  => 'dashicons-admin-users',
-				'roles' => array( 'all' ),
-			),
-			'user_management' => array(
-				'label' => 'User Management',
-				'icon'  => 'dashicons-groups',
-				'roles' => array( 'general_manager', 'system_administrator' ),
-			),
-			'scientific_reports' => array(
-				'label' => 'Scientific Reports',
-				'icon'  => 'dashicons-welcome-learn-more',
-				'roles' => array( 'scientific_researcher', 'board_certified_member', 'fellow', 'institutional_partner', 'chairman_scientific_committee', 'regional_director', 'general_manager', 'system_administrator' ),
+		$items = array(
+			'primary' => array(
+				'overview' => array(
+					'label' => __( 'Overview', 'wshc-membership' ),
+					'icon'  => 'dashicons-dashboard',
+				),
+				'profile' => array(
+					'label' => __( 'Profile Settings', 'wshc-membership' ),
+					'icon'  => 'dashicons-admin-users',
+				),
+				'credentials' => array(
+					'label' => __( 'My Credentials', 'wshc-membership' ),
+					'icon'  => 'dashicons-awards',
+				),
 			),
 		);
 
-		$filtered = array();
-		foreach ( $all_items as $id => $item ) {
-			if ( in_array( 'all', $item['roles'] ) ) {
-				$filtered[ $id ] = $item;
-				continue;
-			}
-			foreach ( $roles as $user_role ) {
-				if ( in_array( $user_role, $item['roles'] ) ) {
-					$filtered[ $id ] = $item;
-					break;
-				}
-			}
+		if ( current_user_can( 'manage_wshc_users' ) ) {
+			$items['management'] = array(
+				'user-directory' => array(
+					'label' => __( 'User Directory', 'wshc-membership' ),
+					'icon'  => 'dashicons-groups',
+				),
+				'system-logs' => array(
+					'label' => __( 'System Logs', 'wshc-membership' ),
+					'icon'  => 'dashicons-list-view',
+				),
+				'global-settings' => array(
+					'label' => __( 'Global Settings', 'wshc-membership' ),
+					'icon'  => 'dashicons-admin-generic',
+				),
+			);
 		}
 
-		return $filtered;
+		return $items;
+	}
+
+	public function ajax_load_view() {
+		check_ajax_referer( 'wshc_nonce', 'security' );
+
+		if ( ! is_user_logged_in() ) {
+			wp_send_json_error( array( 'message' => __( 'Access Denied.', 'wshc-membership' ) ) );
+		}
+
+		$view = isset( $_POST['view'] ) ? sanitize_text_field( $_POST['view'] ) : 'overview';
+
+		// Validate view access
+		$menu_items = $this->get_menu_items();
+		$allowed_views = array_merge( array_keys( $menu_items['primary'] ), isset( $menu_items['management'] ) ? array_keys( $menu_items['management'] ) : array() );
+
+		if ( ! in_array( $view, $allowed_views ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid view.', 'wshc-membership' ) ) );
+		}
+
+		ob_start();
+		$this->get_template( "dashboard-{$view}", array(
+			'current_user' => wp_get_current_user(),
+		) );
+		$html = ob_get_clean();
+
+		wp_send_json_success( array( 'html' => $html ) );
 	}
 
 	public function get_template( $name, $args = array() ) {
