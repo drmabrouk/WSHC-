@@ -59,6 +59,10 @@ class WSHC_Membership {
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_filter( 'wp_nav_menu_items', array( $this, 'add_auth_links_to_menu' ), 10, 2 );
+
+		// Institutional Branding for Emails
+		add_filter( 'wp_mail_from', array( $this, 'set_mail_from' ) );
+		add_filter( 'wp_mail_from_name', array( $this, 'set_mail_from_name' ) );
 	}
 
 	public function activate() {
@@ -109,23 +113,32 @@ class WSHC_Membership {
 			wp_enqueue_style( 'dashicons' );
 			wp_enqueue_style( 'wshc-main', WSHC_URL . 'assets/css/wshc-main.css', array(), WSHC_VERSION );
 			
-			wp_enqueue_script( 'wshc-auth', WSHC_URL . 'assets/js/wshc-auth.js', array( 'jquery' ), WSHC_VERSION, true );
-			wp_localize_script( 'wshc-auth', 'wshc_vars', array(
+			// Shared localization variables
+			$wshc_vars = array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'nonce'    => wp_create_nonce( 'wshc_nonce' ),
-				'dashboard_url' => home_url( '/dashboard' )
-			) );
+				'dashboard_url' => current_user_can('manage_wshc_users') ? home_url( '/dashboard' ) : home_url( '/account' )
+			);
 
-            if ( has_shortcode( $post->post_content, 'wshc_dashboard' ) ) {
+			if ( $is_auth_page ) {
+				wp_enqueue_script( 'wshc-auth', WSHC_URL . 'assets/js/wshc-auth.js', array( 'jquery' ), WSHC_VERSION, true );
+				wp_localize_script( 'wshc-auth', 'wshc_vars', $wshc_vars );
+			}
+
+            if ( $is_dashboard_page ) {
                 wp_enqueue_script( 'wshc-dashboard', WSHC_URL . 'assets/js/wshc-dashboard.js', array( 'jquery' ), WSHC_VERSION, true );
                 wp_enqueue_script( 'wshc-profile-uploader', WSHC_URL . 'assets/js/profile-uploader.js', array( 'jquery' ), WSHC_VERSION, true );
-				wp_localize_script( 'wshc-dashboard', 'wshc_vars', array(
-					'ajax_url' => admin_url( 'admin-ajax.php' ),
-					'nonce'    => wp_create_nonce( 'wshc_nonce' ),
-					'dashboard_url' => home_url( '/dashboard' )
-				) );
+				wp_localize_script( 'wshc-dashboard', 'wshc_vars', $wshc_vars );
             }
 		}
+	}
+
+	public function set_mail_from( $email ) {
+		return 'no-reply@wshouncil.org';
+	}
+
+	public function set_mail_from_name( $name ) {
+		return 'World Sports Health Council (WSHC)';
 	}
 
 	public function add_auth_links_to_menu( $items, $args ) {

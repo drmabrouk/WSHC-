@@ -1,25 +1,35 @@
 <div id="wshc-auth-root" class="wshc-monochrome">
     <div class="wshc-auth-centering">
         <div class="wshc-auth-container" data-state="login">
-            <!-- Progress Bar (Hidden for login/recover) -->
+            <!-- Progress Bar -->
             <div id="wshc-reg-progress" class="wshc-progress-container" style="display:none;">
                 <div class="wshc-progress-bar"></div>
+            </div>
+
+            <div class="wshc-loading-overlay" style="display:none;">
+                <span class="dashicons dashicons-update spin"></span>
             </div>
 
             <!-- Login View -->
             <div id="wshc-login-view" class="wshc-auth-view">
                 <h2><?php _e( 'Sign In', 'wshc-membership' ); ?></h2>
                 <form id="wshc-login-form">
-                    <div class="wshc-field wshc-floating">
-                        <input type="text" name="username" id="login-user" required placeholder=" ">
-                        <label for="login-user"><?php _e( 'Username or Email', 'wshc-membership' ); ?></label>
+                    <div class="wshc-field-group">
+                        <div class="wshc-field">
+                            <label><?php _e( 'Username', 'wshc-membership' ); ?></label>
+                            <input type="text" name="username" required>
+                        </div>
+                        <div class="wshc-field">
+                            <label><?php _e( 'Email Address', 'wshc-membership' ); ?></label>
+                            <input type="email" name="email_placeholder" disabled placeholder="<?php _e( 'Optional', 'wshc-membership' ); ?>">
+                        </div>
                     </div>
-                    <div class="wshc-field wshc-floating wshc-password-field">
-                        <input type="password" name="password" id="login-pass" required placeholder=" ">
-                        <label for="login-pass"><?php _e( 'Password', 'wshc-membership' ); ?></label>
+                    <div class="wshc-field wshc-password-field">
+                        <label><?php _e( 'Password', 'wshc-membership' ); ?></label>
+                        <input type="password" name="password" required>
                         <span class="dashicons dashicons-visibility wshc-toggle-password"></span>
                     </div>
-                    <button type="submit" class="wshc-btn-primary"><?php _e( 'Login', 'wshc-membership' ); ?></button>
+                    <button type="submit" class="wshc-btn-primary"><?php _e( 'Login to Portal', 'wshc-membership' ); ?></button>
                     <div class="wshc-auth-footer">
                         <a href="#" class="wshc-switch" data-target="register"><?php _e( 'Create Account', 'wshc-membership' ); ?></a>
                         <a href="#" class="wshc-switch" data-target="recover"><?php _e( 'Forgot Password?', 'wshc-membership' ); ?></a>
@@ -30,83 +40,70 @@
             <!-- Register Wizard -->
             <div id="wshc-register-view" class="wshc-auth-view" style="display:none;">
                 <form id="wshc-register-form">
-                    <!-- Step 1: Identity -->
+                    <!-- Step 1: Account Setup -->
                     <div class="wshc-reg-step active" data-step="1">
-                        <h2><?php _e( 'Identity', 'wshc-membership' ); ?></h2>
+                        <h2><?php _e( 'Account Setup', 'wshc-membership' ); ?></h2>
                         <div class="wshc-field-group">
-                            <div class="wshc-field wshc-floating">
-                                <input type="text" name="first_name" id="reg-fname" required placeholder=" ">
-                                <label for="reg-fname"><?php _e( 'First Name', 'wshc-membership' ); ?></label>
+                            <div class="wshc-field">
+                                <label><?php _e( 'Username', 'wshc-membership' ); ?></label>
+                                <input type="text" name="username" required>
                             </div>
-                            <div class="wshc-field wshc-floating">
-                                <input type="text" name="last_name" id="reg-lname" required placeholder=" ">
-                                <label for="reg-lname"><?php _e( 'Last Name', 'wshc-membership' ); ?></label>
+                            <div class="wshc-field">
+                                <label><?php _e( 'Email Address', 'wshc-membership' ); ?></label>
+                                <input type="email" name="email" required>
                             </div>
                         </div>
-                        <div class="wshc-field wshc-floating">
-                            <input type="email" name="email" id="reg-email" required placeholder=" ">
-                            <label for="reg-email"><?php _e( 'Email Address', 'wshc-membership' ); ?></label>
-                        </div>
-                        <div class="wshc-field wshc-floating">
-                            <input type="text" name="username" id="reg-user" required placeholder=" ">
-                            <label for="reg-user"><?php _e( 'Username', 'wshc-membership' ); ?></label>
-                        </div>
-                        <div class="wshc-field wshc-floating wshc-password-field">
-                            <input type="password" name="password" id="reg-pass" required placeholder=" ">
-                            <label for="reg-pass"><?php _e( 'Password', 'wshc-membership' ); ?></label>
-                            <span class="dashicons dashicons-visibility wshc-toggle-password"></span>
-                        </div>
-                        <div class="wshc-field wshc-floating wshc-password-field">
-                            <input type="password" name="confirm_password" id="reg-confirm" required placeholder=" ">
-                            <label for="reg-confirm"><?php _e( 'Confirm Password', 'wshc-membership' ); ?></label>
-                            <span class="dashicons dashicons-visibility wshc-toggle-password"></span>
+                        <div class="wshc-field-group">
+                            <div class="wshc-field wshc-password-field">
+                                <label><?php _e( 'Password', 'wshc-membership' ); ?></label>
+                                <input type="password" name="password" required>
+                                <span class="dashicons dashicons-visibility wshc-toggle-password"></span>
+                            </div>
+                            <div class="wshc-field wshc-password-field">
+                                <label><?php _e( 'Confirm Password', 'wshc-membership' ); ?></label>
+                                <input type="password" name="confirm_password" required>
+                                <span class="dashicons dashicons-visibility wshc-toggle-password"></span>
+                            </div>
                         </div>
                         <button type="button" class="wshc-btn-primary wshc-next-step"><?php _e( 'Continue', 'wshc-membership' ); ?></button>
                     </div>
 
-                    <!-- Step 2: Professional Credentials -->
+                    <!-- Step 2: Verification (OTP) -->
                     <div class="wshc-reg-step" data-step="2">
-                        <h2><?php _e( 'Professional', 'wshc-membership' ); ?></h2>
-                        <div class="wshc-field wshc-floating">
-                            <input type="text" name="academic_degree" id="reg-degree" placeholder=" ">
-                            <label for="reg-degree"><?php _e( 'Academic Degree (e.g., MD, PhD)', 'wshc-membership' ); ?></label>
+                        <h2><?php _e( 'Email Verification', 'wshc-membership' ); ?></h2>
+                        <p class="wshc-view-desc" style="text-align:center; font-size: 13px; color: #666; margin-bottom: 25px;">
+                            <?php _e( 'A 6-digit code has been sent to your email address.', 'wshc-membership' ); ?>
+                        </p>
+                        <div class="wshc-field">
+                            <label style="text-align:center;"><?php _e( 'Enter One-Time Password', 'wshc-membership' ); ?></label>
+                            <input type="text" name="otp" maxlength="6" style="text-align:center; letter-spacing: 8px; font-size: 20px; font-weight: 700;">
                         </div>
-                        <div class="wshc-field wshc-floating">
-                            <input type="text" name="specialization" id="reg-spec" placeholder=" ">
-                            <label for="reg-spec"><?php _e( 'Specialization', 'wshc-membership' ); ?></label>
-                        </div>
-                        <div class="wshc-field wshc-floating">
-                            <input type="text" name="license_number" id="reg-license" placeholder=" ">
-                            <label for="reg-license"><?php _e( 'Professional License Number', 'wshc-membership' ); ?></label>
-                        </div>
-                        <div class="wshc-field-group">
-                            <button type="button" class="wshc-btn-secondary wshc-prev-step"><?php _e( 'Back', 'wshc-membership' ); ?></button>
-                            <button type="button" class="wshc-btn-primary wshc-next-step"><?php _e( 'Continue', 'wshc-membership' ); ?></button>
-                        </div>
+                        <button type="button" class="wshc-btn-primary wshc-verify-step"><?php _e( 'Verify & Continue', 'wshc-membership' ); ?></button>
                     </div>
 
-                    <!-- Step 3: Legal & Consent -->
+                    <!-- Step 3: Professional Info -->
                     <div class="wshc-reg-step" data-step="3">
-                        <h2><?php _e( 'Legal', 'wshc-membership' ); ?></h2>
-                        <div class="wshc-legal-box">
-                            <p><?php _e( 'By registering, you agree to our Terms of Service and Professional Code of Ethics. We process your data in accordance with our Privacy Policy.', 'wshc-membership' ); ?></p>
-                        </div>
-                        <div class="wshc-field wshc-checkbox-field">
-                            <label>
-                                <input type="checkbox" name="consent_terms" required>
-                                <?php _e( 'I agree to the Terms & Conditions', 'wshc-membership' ); ?>
-                            </label>
-                        </div>
-                        <div class="wshc-field wshc-checkbox-field">
-                            <label>
-                                <input type="checkbox" name="consent_privacy" required>
-                                <?php _e( 'I agree to the Privacy Policy', 'wshc-membership' ); ?>
-                            </label>
-                        </div>
+                        <h2><?php _e( 'Professional Profile', 'wshc-membership' ); ?></h2>
                         <div class="wshc-field-group">
-                            <button type="button" class="wshc-btn-secondary wshc-prev-step"><?php _e( 'Back', 'wshc-membership' ); ?></button>
-                            <button type="submit" class="wshc-btn-primary"><?php _e( 'Complete Registration', 'wshc-membership' ); ?></button>
+                            <div class="wshc-field">
+                                <label><?php _e( 'Specialization', 'wshc-membership' ); ?></label>
+                                <select name="specialization">
+                                    <option value="Sports Medicine"><?php _e( 'Sports Medicine', 'wshc-membership' ); ?></option>
+                                    <option value="Athletic Training"><?php _e( 'Athletic Training', 'wshc-membership' ); ?></option>
+                                    <option value="Physical Therapy"><?php _e( 'Physical Therapy', 'wshc-membership' ); ?></option>
+                                    <option value="Other"><?php _e( 'Other Professional', 'wshc-membership' ); ?></option>
+                                </select>
+                            </div>
+                            <div class="wshc-field">
+                                <label><?php _e( 'License Number', 'wshc-membership' ); ?></label>
+                                <input type="text" name="license_number">
+                            </div>
                         </div>
+                        <div class="wshc-field">
+                            <label><?php _e( 'Professional Bio', 'wshc-membership' ); ?></label>
+                            <textarea name="bio" rows="3" maxlength="150" placeholder="<?php _e( 'Max 150 characters...', 'wshc-membership' ); ?>"></textarea>
+                        </div>
+                        <button type="submit" class="wshc-btn-primary"><?php _e( 'Complete Registration', 'wshc-membership' ); ?></button>
                     </div>
                 </form>
                 <div class="wshc-auth-footer">
@@ -114,36 +111,22 @@
                 </div>
             </div>
 
-            <!-- OTP Verification View -->
-            <div id="wshc-verify-view" class="wshc-auth-view" style="display:none;">
-                <h2><?php _e( 'Verify Account', 'wshc-membership' ); ?></h2>
-                <p class="wshc-view-desc"><?php _e( 'Enter the 6-digit OTP sent to your email.', 'wshc-membership' ); ?></p>
-                <form id="wshc-verify-form">
-                    <input type="hidden" name="user_id" id="wshc-verify-user-id">
-                    <div class="wshc-field wshc-floating">
-                        <input type="text" name="otp" id="verify-otp" maxlength="6" required placeholder=" " style="text-align:center; letter-spacing: 5px; font-size: 24px;">
-                        <label for="verify-otp"><?php _e( 'Verification Code', 'wshc-membership' ); ?></label>
-                    </div>
-                    <button type="submit" class="wshc-btn-primary"><?php _e( 'Verify & Access Portal', 'wshc-membership' ); ?></button>
-                </form>
-            </div>
-
             <!-- Recover View -->
             <div id="wshc-recover-view" class="wshc-auth-view" style="display:none;">
-                <h2><?php _e( 'Reset Password', 'wshc-membership' ); ?></h2>
+                <h2><?php _e( 'Recover Access', 'wshc-membership' ); ?></h2>
                 <form id="wshc-recover-form">
-                    <div class="wshc-field wshc-floating">
-                        <input type="text" name="user_login" id="recover-user" required placeholder=" ">
-                        <label for="recover-user"><?php _e( 'Username or Email', 'wshc-membership' ); ?></label>
+                    <div class="wshc-field">
+                        <label><?php _e( 'Username or Email', 'wshc-membership' ); ?></label>
+                        <input type="text" name="user_login" required>
                     </div>
-                    <button type="submit" class="wshc-btn-primary"><?php _e( 'Send Reset Link', 'wshc-membership' ); ?></button>
+                    <button type="submit" class="wshc-btn-primary"><?php _e( 'Send Recovery Link', 'wshc-membership' ); ?></button>
                     <div class="wshc-auth-footer">
                         <a href="#" class="wshc-switch" data-target="login"><?php _e( 'Return to Login', 'wshc-membership' ); ?></a>
                     </div>
                 </form>
             </div>
 
-            <div id="wshc-api-response"></div>
+            <div id="wshc-api-response" style="margin-top: 25px; text-align: center; font-size: 13px;"></div>
         </div>
     </div>
 </div>
