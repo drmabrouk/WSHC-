@@ -18,12 +18,14 @@ class WSHC_Auth {
 	private function __construct() {
 		add_shortcode( 'wshc_auth', array( $this, 'render_auth_box' ) );
 		add_action( 'init', array( $this, 'handle_verification' ) );
-        add_action( 'template_redirect', array( $this, 'force_dashboard_redirect' ) );
+        add_action( 'template_redirect', array( $this, 'enforce_route_guards' ) );
+		add_filter( 'auth_cookie_expiration', array( $this, 'extend_auth_cookie' ), 10, 3 );
 	}
 
 	public function render_auth_box() {
 		if ( is_user_logged_in() ) {
-			return sprintf( '<p>%s <a href="%s">%s</a></p>', __( 'Already logged in.', 'wshc-membership' ), home_url( '/dashboard' ), __( 'Go to Dashboard', 'wshc-membership' ) );
+			$redirect = current_user_can( 'manage_wshc_users' ) ? home_url( '/dashboard' ) : home_url( '/account' );
+			return sprintf( '<p>%s <a href="%s">%s</a></p>', __( 'Already logged in.', 'wshc-membership' ), $redirect, __( 'Go to Portal', 'wshc-membership' ) );
 		}
 
 		ob_start();
@@ -42,18 +44,34 @@ class WSHC_Auth {
 				delete_user_meta( $user_id, 'wshc_activation_code' );
 				$user = new WP_User( $user_id );
 				$user->set_role( 'visitor' );
-				wp_safe_redirect( add_query_arg( 'verified', '1', home_url( '/login-register' ) ) );
+				wp_safe_redirect( add_query_arg( 'verified', '1', home_url( '/login' ) ) );
 				exit;
 			}
 		}
 	}
     
-    public function force_dashboard_redirect() {
-        if ( is_user_logged_in() && is_page( 'login-register' ) ) {
-            wp_safe_redirect( home_url( '/dashboard' ) );
-            exit;
-        }
+    public function enforce_route_guards() {
+		if ( is_user_logged_in() ) {
+			if ( is_page( 'login' ) || is_page( 'login-register' ) ) {
+				$redirect = current_user_can( 'manage_wshc_users' ) ? home_url( '/dashboard' ) : home_url( '/account' );
+				wp_safe_redirect( $redirect );
+				exit;
+			}
+
+			// Standard roles (Visitor through Fellow) will always see /account
+			if ( is_page( 'dashboard' ) && ! current_user_can( 'manage_wshc_users' ) ) {
+				wp_safe_redirect( home_url( '/account' ) );
+				exit;
+			}
+		}
     }
+
+	public function extend_auth_cookie( $expiration, $user_id, $remember ) {
+		if ( $remember ) {
+			$expiration = 30 * DAY_IN_SECONDS;
+		}
+		return $expiration;
+	}
 
 	public function get_template( $name, $args = array() ) {
 		$template = WSHC_PATH . "templates/{$name}.php";
