@@ -74,20 +74,29 @@
                 </div>
                 <div id="wshc-dynamic-content">
                     <?php
-                        $dashboard->get_template( "dashboard-{$current_view}", array( 'current_user' => $current_user ) );
+                        // Initial Load based on current view mapping
+                        $template_map = array(
+                            'overview'           => 'modules/overview',
+                            'profile'            => 'modules/profile',
+                            'credentials'        => 'modules/credentials',
+                            'help'               => 'modules/help',
+                            'scientific-reports' => 'modules/scientific-reports',
+                            'board-resources'    => 'modules/board-resources',
+                            'user-directory'     => 'modules/admin/user-list',
+                            'system-logs'        => 'modules/admin/logs',
+                            'global-settings'    => 'modules/admin/settings',
+                        );
+                        $initial_template = isset( $template_map[ $current_view ] ) ? $template_map[ $current_view ] : 'modules/overview';
+                        $dashboard->get_template( $initial_template, array( 'current_user' => $current_user ) );
                     ?>
                 </div>
             </div>
         </main>
     </div>
-
-    <footer class="wshc-dashboard-footer">
-        <p><?php _e( '&copy; 2026 World Sports Health Council | WSHC Digital Infrastructure. All Rights Reserved.', 'wshc-membership' ); ?></p>
-    </footer>
 </div>
 
 <!-- Settings Modal -->
-<div id="wshc-settings-modal" class="wshc-modal">
+<div id="wshc-settings-modal" class="wshc-modal" style="display:none;">
     <div class="wshc-modal-content">
         <span class="wshc-modal-close" id="wshc-settings-close">&times;</span>
 
