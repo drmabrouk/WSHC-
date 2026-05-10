@@ -74,14 +74,20 @@ class WSHC_User_Update_Handler {
 		}
 
 		$user_id = get_current_user_id();
+		$user = get_userdata( $user_id );
+
 		$first_name = sanitize_text_field( $_POST['first_name'] );
 		$last_name  = sanitize_text_field( $_POST['last_name'] );
+		$username   = sanitize_user( $_POST['username'] );
 		$email      = sanitize_email( $_POST['email'] );
-		$password   = $_POST['password'];
-		$bio        = sanitize_textarea_field( $_POST['bio'] );
+
+		$current_password = $_POST['current_password'];
+		$new_password     = $_POST['new_password'];
+
+		$bio            = sanitize_textarea_field( $_POST['bio'] );
 		$specialization = sanitize_text_field( $_POST['specialization'] );
-		$degree     = sanitize_text_field( $_POST['degree'] );
-		$institution = sanitize_text_field( $_POST['institution'] );
+		$degree         = sanitize_text_field( $_POST['degree'] );
+		$institution    = sanitize_text_field( $_POST['institution'] );
 
 		// Validation
 		if ( ! is_email( $email ) ) {
@@ -92,7 +98,7 @@ class WSHC_User_Update_Handler {
 			wp_send_json_error( array( 'message' => __( 'Email already in use.', 'wshc-membership' ) ) );
 		}
 
-		if ( strlen( $bio ) > 150 ) {
+		if ( mb_strlen( $bio ) > 150 ) {
 			wp_send_json_error( array( 'message' => __( 'Bio exceeds 150 characters.', 'wshc-membership' ) ) );
 		}
 
@@ -103,14 +109,31 @@ class WSHC_User_Update_Handler {
 			'user_email' => $email,
 		);
 
-		if ( ! empty( $password ) ) {
-			if ( strlen( $password ) < 8 ) {
-				wp_send_json_error( array( 'message' => __( 'Password must be at least 8 characters.', 'wshc-membership' ) ) );
+		// Password Update with Verification
+		if ( ! empty( $new_password ) ) {
+			if ( empty( $current_password ) || ! wp_check_password( $current_password, $user->user_pass, $user_id ) ) {
+				wp_send_json_error( array( 'message' => __( 'Current password incorrect.', 'wshc-membership' ) ) );
 			}
-			$userdata['user_pass'] = $password;
+			if ( strlen( $new_password ) < 8 ) {
+				wp_send_json_error( array( 'message' => __( 'New password must be at least 8 characters.', 'wshc-membership' ) ) );
+			}
+			$userdata['user_pass'] = $new_password;
+		}
+
+		// Username Portability & Permalink Refresh
+		if ( $username && $username !== $user->user_login ) {
+			if ( username_exists( $username ) ) {
+				wp_send_json_error( array( 'message' => __( 'Username already taken.', 'wshc-membership' ) ) );
+			}
+
+			// Direct DB update for username (with caution)
+			global $wpdb;
+			$wpdb->update( $wpdb->users, array( 'user_login' => $username, 'user_nicename' => sanitize_title( $username ) ), array( 'ID' => $user_id ) );
+			clean_user_cache( $user_id );
 		}
 
 		wp_update_user( $userdata );
+		flush_rewrite_rules();
 
 		// Update Meta
 		update_user_meta( $user_id, 'description', $bio );

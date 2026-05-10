@@ -151,7 +151,11 @@ jQuery(document).ready(function($) {
 
         loadView: function(view, label, updatePushState = true) {
             const self = this;
-            $('.wshc-loading-overlay').show();
+            const $container = $('#wshc-dynamic-content');
+
+            // Wipe container and show loading
+            $container.empty();
+            $('.wshc-loading-overlay').fadeIn(100);
 
             $.ajax({
                 url: wshc_vars.ajax_url,
@@ -163,7 +167,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function(response) {
                     if (response.success) {
-                        $('#wshc-dynamic-content').html(response.html);
+                        $container.html(response.html);
                         $('#wshc-view-title').text(label);
 
                         // Mark active in sidebar
@@ -175,12 +179,18 @@ jQuery(document).ready(function($) {
                             history.pushState({ view: view }, '', newUrl);
                         }
 
-                        // If user directory, load users
+                        // Handle unique view initializations
                         if (view === 'user-directory') {
                             self.loadUsers(1);
                         }
+                    } else {
+                        $container.html(`<p class="error">${response.data.message}</p>`);
                     }
-                    $('.wshc-loading-overlay').hide();
+                    $('.wshc-loading-overlay').fadeOut(100);
+                },
+                error: function() {
+                    $container.html('<p class="error">Failed to load view.</p>');
+                    $('.wshc-loading-overlay').fadeOut(100);
                 }
             });
 
