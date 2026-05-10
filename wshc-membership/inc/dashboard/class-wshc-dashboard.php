@@ -79,8 +79,8 @@ class WSHC_Dashboard {
 			$items['professional'] = $professional_tools;
 		}
 
-		// Management Group (Strictly for Admins)
-		if ( current_user_can( 'manage_wshc_users' ) ) {
+		// Management Group (Gated by manage_wshc_users or manage_options for native Admins)
+		if ( current_user_can( 'manage_wshc_users' ) || current_user_can( 'manage_options' ) ) {
 			$items['management'] = array();
 
 			// User Directory exclusive to System Admin/WP Admin
@@ -90,7 +90,7 @@ class WSHC_Dashboard {
 			);
 
 			// System Admin exclusive modules
-			if ( current_user_can( 'manage_wshc_users' ) ) {
+			if ( current_user_can( 'manage_wshc_users' ) || current_user_can( 'manage_options' ) ) {
 				$items['management']['system-logs'] = array(
 					'label' => __( 'System Logs', 'wshc-membership' ),
 					'icon'  => 'dashicons-list-view',

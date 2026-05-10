@@ -2,6 +2,7 @@
     <nav class="wshc-nav">
         <?php foreach ( $menu_items as $group_id => $items ) : ?>
             <div class="wshc-nav-group">
+                <h4 class="wshc-nav-group-title"><?php echo esc_html( ucfirst( $group_id ) ); ?></h4>
                 <ul>
                     <?php foreach ( $items as $id => $item ) : ?>
                         <li class="<?php echo ( isset( $_GET['view'] ) && $_GET['view'] === $id ) || ( ! isset( $_GET['view'] ) && $id === 'overview' ) ? 'active' : ''; ?>">
