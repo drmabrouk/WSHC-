@@ -54,6 +54,7 @@ class WSHC_Membership {
 	private function init_hooks() {
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		add_filter( 'wp_nav_menu_items', array( $this, 'add_auth_links_to_menu' ), 10, 2 );
 	}
 
 	public function activate() {
@@ -113,6 +114,7 @@ class WSHC_Membership {
 
             if ( has_shortcode( $post->post_content, 'wshc_dashboard' ) ) {
                 wp_enqueue_script( 'wshc-dashboard', WSHC_URL . 'assets/js/wshc-dashboard.js', array( 'jquery' ), WSHC_VERSION, true );
+                wp_enqueue_script( 'wshc-profile-uploader', WSHC_URL . 'assets/js/profile-uploader.js', array( 'jquery' ), WSHC_VERSION, true );
 				wp_localize_script( 'wshc-dashboard', 'wshc_vars', array(
 					'ajax_url' => admin_url( 'admin-ajax.php' ),
 					'nonce'    => wp_create_nonce( 'wshc_nonce' ),
@@ -120,6 +122,14 @@ class WSHC_Membership {
 				) );
             }
 		}
+	}
+
+	public function add_auth_links_to_menu( $items, $args ) {
+		if ( ! is_user_logged_in() ) {
+			$login_url = home_url( '/login' );
+			$items .= '<li class="menu-item wshc-menu-login"><a href="' . esc_url( $login_url ) . '">' . __( 'Login / Register', 'wshc-membership' ) . '</a></li>';
+		}
+		return $items;
 	}
 }
 

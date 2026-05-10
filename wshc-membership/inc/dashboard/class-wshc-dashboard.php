@@ -18,6 +18,7 @@ class WSHC_Dashboard {
 	private function __construct() {
 		add_shortcode( 'wshc_dashboard', array( $this, 'render_dashboard' ) );
 		add_action( 'wp_ajax_wshc_load_view', array( $this, 'ajax_load_view' ) );
+		add_action( 'wp_ajax_wshc_upload_profile_image', array( $this, 'ajax_upload_profile_image' ) );
 	}
 
 	public function render_dashboard() {
@@ -95,6 +96,52 @@ class WSHC_Dashboard {
 		$html = ob_get_clean();
 
 		wp_send_json_success( array( 'html' => $html ) );
+	}
+
+	public function ajax_upload_profile_image() {
+		check_ajax_referer( 'wshc_nonce', 'security' );
+
+		if ( ! is_user_logged_in() ) {
+			wp_send_json_error( array( 'message' => __( 'Access Denied.', 'wshc-membership' ) ) );
+		}
+
+		if ( empty( $_FILES['profile_image'] ) ) {
+			wp_send_json_error( array( 'message' => __( 'No file uploaded.', 'wshc-membership' ) ) );
+		}
+
+		require_once( ABSPATH . 'wp-admin/includes/image.php' );
+		require_once( ABSPATH . 'wp-admin/includes/file.php' );
+		require_once( ABSPATH . 'wp-admin/includes/media.php' );
+
+		$attachment_id = media_handle_upload( 'profile_image', 0 );
+
+		if ( is_wp_error( $attachment_id ) ) {
+			wp_send_json_error( array( 'message' => $attachment_id->get_error_message() ) );
+		}
+
+		// Square crop processing
+		$file_path = get_attached_file( $attachment_id );
+		$image = wp_get_image_editor( $file_path );
+
+		if ( ! is_wp_error( $image ) ) {
+			$size = $image->get_size();
+			$width = $size['width'];
+			$height = $size['height'];
+			$min = min( $width, $height );
+			$x = ( $width - $min ) / 2;
+			$y = ( $height - $min ) / 2;
+
+			$image->crop( $x, $y, $min, $min );
+			$image->save( $file_path );
+		}
+
+		$image_url = wp_get_attachment_url( $attachment_id );
+		update_user_meta( get_current_user_id(), 'wshc_profile_image', $image_url );
+
+		wp_send_json_success( array(
+			'message' => __( 'Profile image updated.', 'wshc-membership' ),
+			'url'     => $image_url
+		) );
 	}
 
 	public function get_template( $name, $args = array() ) {

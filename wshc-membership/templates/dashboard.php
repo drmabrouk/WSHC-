@@ -1,54 +1,45 @@
 <div id="wshc-dashboard-root" class="wshc-monochrome">
-    <!-- Mobile Header -->
-    <header class="wshc-mobile-nav">
-        <div class="wshc-brand"><?php echo current_user_can( 'manage_wshc_users' ) ? __( 'System Dashboard', 'wshc-membership' ) : __( 'My Account', 'wshc-membership' ); ?></div>
-        <button id="wshc-hamburger">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+    <!-- Top-Bar Header -->
+    <header class="wshc-top-bar">
+        <div class="wshc-top-bar-left">
+            <button id="wshc-hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="wshc-brand">
+                <?php echo current_user_can( 'manage_wshc_users' ) ? __( 'System Dashboard', 'wshc-membership' ) : __( 'My Account', 'wshc-membership' ); ?>
+            </div>
+        </div>
+        <div class="wshc-top-bar-right">
+            <div class="wshc-user-menu">
+                <span class="wshc-user-name"><?php echo esc_html( $current_user->display_name ); ?></span>
+                <div class="wshc-top-avatar">
+                    <?php
+                        $avatar_url = get_user_meta( $current_user->ID, 'wshc_profile_image', true );
+                        if ( $avatar_url ) {
+                            echo '<img src="' . esc_url( $avatar_url ) . '" />';
+                        } else {
+                            echo get_avatar( $current_user->ID, 32 );
+                        }
+                    ?>
+                </div>
+                <a href="<?php echo wp_logout_url( home_url() ); ?>" class="wshc-logout-icon" title="<?php _e( 'Logout', 'wshc-membership' ); ?>">
+                    <span class="dashicons dashicons-log-out"></span>
+                </a>
+            </div>
+        </div>
     </header>
 
     <div class="wshc-dashboard-container">
         <!-- Sidebar -->
-        <aside id="wshc-sidebar">
-            <div class="wshc-sidebar-header">
-                <div class="wshc-avatar">
-                    <?php echo get_avatar( $current_user->ID, 80 ); ?>
-                </div>
-                <h3><?php echo esc_html( $current_user->display_name ); ?></h3>
-                <span class="wshc-badge"><?php echo esc_html( ucfirst( str_replace( '_', ' ', $current_user->roles[0] ) ) ); ?></span>
-            </div>
-
-            <nav class="wshc-nav">
-                <?php foreach ( $menu_items as $group_id => $items ) : ?>
-                    <div class="wshc-nav-group">
-                        <h4 class="wshc-nav-group-title"><?php echo esc_html( ucfirst( $group_id ) ); ?></h4>
-                        <ul>
-                            <?php foreach ( $items as $id => $item ) : ?>
-                                <li class="<?php echo ( isset( $_GET['view'] ) && $_GET['view'] === $id ) || ( ! isset( $_GET['view'] ) && $id === 'overview' ) ? 'active' : ''; ?>">
-                                    <a href="#" data-view="<?php echo esc_attr( $id ); ?>">
-                                        <span class="dashicons <?php echo esc_attr( $item['icon'] ); ?>"></span>
-                                        <?php echo esc_html( $item['label'] ); ?>
-                                    </a>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                <?php endforeach; ?>
-
-                <div class="wshc-nav-group">
-                    <ul>
-                        <li class="wshc-logout">
-                            <a href="<?php echo wp_logout_url( home_url() ); ?>">
-                                <span class="dashicons dashicons-log-out"></span>
-                                <?php _e( 'Logout', 'wshc-membership' ); ?>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </aside>
+        <?php
+            $dashboard = WSHC_Dashboard::get_instance();
+            $dashboard->get_template( 'sidebar-view', array(
+                'current_user' => $current_user,
+                'menu_items'   => $menu_items
+            ) );
+        ?>
 
         <!-- Main Content Area -->
         <main id="wshc-content">
@@ -72,8 +63,6 @@
                 </div>
                 <div id="wshc-dynamic-content">
                     <?php
-                        // Initial load
-                        $dashboard = WSHC_Dashboard::get_instance();
                         $dashboard->get_template( "dashboard-{$current_view}", array( 'current_user' => $current_user ) );
                     ?>
                 </div>
