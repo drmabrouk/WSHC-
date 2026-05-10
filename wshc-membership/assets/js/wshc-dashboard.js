@@ -14,9 +14,10 @@ jQuery(document).ready(function($) {
                 $('#wshc-sidebar').toggleClass('active');
             });
 
-            // AJAX View Routing
+            // AJAX View Routing - With Content Persistence Shield
             $(document).on('click', '#wshc-sidebar a[data-view]', function(e) {
                 e.preventDefault();
+                e.stopImmediatePropagation(); // Prevent Conflict
                 const view = $(this).data('view');
                 const label = $(this).text().trim();
 
@@ -112,11 +113,13 @@ jQuery(document).ready(function($) {
             });
 
             // Settings: Toggle Modal
-            $(document).on('click', '#wshc-settings-toggle', function() {
-                $('#wshc-settings-modal').fadeIn(200);
+            $(document).on('click', '#wshc-settings-toggle', function(e) {
+                e.preventDefault();
+                $('#wshc-settings-modal').css('display', 'flex').hide().fadeIn(200);
             });
 
-            $(document).on('click', '#wshc-settings-close', function() {
+            $(document).on('click', '#wshc-settings-close', function(e) {
+                e.preventDefault();
                 $('#wshc-settings-modal').fadeOut(200);
             });
 
@@ -153,8 +156,11 @@ jQuery(document).ready(function($) {
             const self = this;
             const $container = $('#wshc-dynamic-content');
 
+            // State Locking Mechanism
+            if ($container.attr('data-active-view') === view && updatePushState) return;
+
             // Wipe container and show loading
-            $container.empty();
+            $container.empty().attr('data-active-view', 'loading');
             $('.wshc-loading-overlay').fadeIn(100);
 
             $.ajax({
@@ -167,7 +173,7 @@ jQuery(document).ready(function($) {
                 },
                 success: function(response) {
                     if (response.success) {
-                        $container.html(response.html);
+                        $container.html(response.html).attr('data-active-view', view);
                         $('#wshc-view-title').text(label);
 
                         // Mark active in sidebar
@@ -184,12 +190,12 @@ jQuery(document).ready(function($) {
                             self.loadUsers(1);
                         }
                     } else {
-                        $container.html(`<p class="error">${response.data.message}</p>`);
+                        $container.html(`<p class="error">${response.data.message}</p>`).attr('data-active-view', 'error');
                     }
                     $('.wshc-loading-overlay').fadeOut(100);
                 },
                 error: function() {
-                    $container.html('<p class="error">Failed to load view.</p>');
+                    $container.html('<p class="error">Failed to load view.</p>').attr('data-active-view', 'error');
                     $('.wshc-loading-overlay').fadeOut(100);
                 }
             });

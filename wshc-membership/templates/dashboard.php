@@ -2,11 +2,6 @@
     <!-- Top-Bar Header -->
     <header class="wshc-top-bar">
         <div class="wshc-top-bar-left">
-            <button id="wshc-hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
             <div class="wshc-brand">
                 <?php echo current_user_can( 'manage_wshc_users' ) ? __( 'System Dashboard', 'wshc-membership' ) : __( 'My Account', 'wshc-membership' ); ?>
             </div>
@@ -72,7 +67,7 @@
                 <div class="wshc-loading-overlay" style="display:none;">
                     <span class="dashicons dashicons-update spin"></span>
                 </div>
-                <div id="wshc-dynamic-content">
+                <div id="wshc-dynamic-content" data-active-view="<?php echo esc_attr( $current_view ); ?>">
                     <?php
                         // Initial Load based on current view mapping
                         $template_map = array(
