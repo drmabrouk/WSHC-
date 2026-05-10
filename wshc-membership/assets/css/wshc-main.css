@@ -226,3 +226,14 @@
 .wshc-pro-grid td { padding: 15px; border-bottom: 1px solid #EEE; font-size: 14px; }
 .spin { animation: wshc-spin 1s infinite linear; }
 @keyframes wshc-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.wshc-dashboard-footer {
+    padding: 20px 40px;
+    text-align: center;
+    border-top: 1px solid var(--wshc-gray-mid);
+    background: var(--wshc-white);
+    font-size: 11px;
+    color: var(--wshc-gray-dark);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}

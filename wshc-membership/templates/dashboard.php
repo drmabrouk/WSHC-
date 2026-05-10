@@ -81,6 +81,10 @@
             </div>
         </main>
     </div>
+
+    <footer class="wshc-dashboard-footer">
+        <p><?php _e( '&copy; 2026 World Sports Health Council | WSHC Digital Infrastructure. All Rights Reserved.', 'wshc-membership' ); ?></p>
+    </footer>
 </div>
 
 <!-- Settings Modal -->
