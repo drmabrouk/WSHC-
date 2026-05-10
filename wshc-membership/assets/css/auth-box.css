@@ -1,0 +1,110 @@
+.wshc-auth-box {
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    font-family: inherit;
+    color: #333;
+}
+
+.wshc-auth-box h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #000;
+}
+
+.wshc-auth-box .form-group {
+    margin-bottom: 20px;
+}
+
+.wshc-auth-box label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+}
+
+.wshc-auth-box input[type="text"],
+.wshc-auth-box input[type="password"],
+.wshc-auth-box input[type="email"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.wshc-auth-box input:focus {
+    border-color: #000;
+    outline: none;
+}
+
+.wshc-auth-box button {
+    width: 100%;
+    padding: 12px;
+    background: #000;
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.wshc-auth-box button:hover {
+    background: #333;
+}
+
+.wshc-auth-box .form-footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+}
+
+.wshc-auth-box .form-footer a {
+    color: #000;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.wshc-auth-box .form-footer a:hover {
+    color: #666;
+}
+
+#wshc-ajax-message {
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+#wshc-ajax-message.success {
+    color: #27ae60;
+    background: #f1fcf4;
+    border: 1px solid #27ae60;
+}
+
+#wshc-ajax-message.error {
+    color: #c0392b;
+    background: #fef5f5;
+    border: 1px solid #c0392b;
+}
+
+.wshc-message.success {
+    background: #f1fcf4;
+    border: 1px solid #27ae60;
+    color: #27ae60;
+    padding: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}

@@ -1,0 +1,308 @@
+/* 
+   WSHC Main Styles - Monochromatic Professional Design
+   Colors: #000 (Black), #FFF (White), #E0E0E0 (Gray), #F5F5F5 (Light Gray)
+*/
+
+:root {
+    --wshc-black: #000000;
+    --wshc-white: #FFFFFF;
+    --wshc-gray-light: #F5F5F5;
+    --wshc-gray-mid: #E0E0E0;
+    --wshc-gray-dark: #666666;
+    --wshc-border: 1px solid var(--wshc-gray-mid);
+    --wshc-font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.wshc-monochrome {
+    font-family: var(--wshc-font-system);
+    color: var(--wshc-black);
+    background: var(--wshc-white);
+}
+
+/* Auth Box Styling */
+.wshc-auth-container {
+    max-width: 450px;
+    margin: 60px auto;
+    padding: 40px;
+    background: var(--wshc-white);
+    border: var(--wshc-border);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+}
+
+.wshc-auth-view h2 {
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.wshc-field-group {
+    display: flex;
+    gap: 15px;
+}
+
+.wshc-field-group .wshc-field {
+    flex: 1;
+}
+
+.wshc-field {
+    margin-bottom: 20px;
+}
+
+.wshc-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    color: var(--wshc-gray-dark);
+}
+
+.wshc-field input {
+    width: 100%;
+    padding: 12px;
+    border: var(--wshc-border);
+    background: var(--wshc-gray-light);
+    font-size: 16px;
+    outline: none;
+}
+
+.wshc-field input:focus {
+    border-color: var(--wshc-black);
+}
+
+.wshc-btn-primary {
+    width: 100%;
+    padding: 15px;
+    background: var(--wshc-black);
+    color: var(--wshc-white);
+    border: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.wshc-btn-primary:hover {
+    opacity: 0.8;
+}
+
+.wshc-auth-footer {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.wshc-auth-footer a {
+    color: var(--wshc-black);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+}
+
+.wshc-auth-footer a:hover {
+    border-bottom-color: var(--wshc-black);
+}
+
+/* Dashboard Layout */
+.wshc-dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+#wshc-sidebar {
+    width: 280px;
+    background: var(--wshc-black);
+    color: var(--wshc-white);
+    padding-top: 40px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    transition: transform 0.3s ease;
+}
+
+.wshc-sidebar-header {
+    text-align: center;
+    padding: 0 20px 30px;
+    border-bottom: 1px solid #333;
+}
+
+.wshc-avatar img {
+    border-radius: 50%;
+    border: 2px solid var(--wshc-white);
+    margin-bottom: 15px;
+}
+
+.wshc-sidebar-header h3 {
+    margin: 10px 0 5px;
+    font-size: 18px;
+}
+
+.wshc-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--wshc-gray-dark);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.wshc-nav ul {
+    list-style: none;
+    padding: 20px 0;
+    margin: 0;
+}
+
+.wshc-nav li a {
+    display: flex;
+    align-items: center;
+    padding: 15px 30px;
+    color: #999;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.wshc-nav li a span.dashicons {
+    margin-right: 15px;
+}
+
+.wshc-nav li a:hover, .wshc-nav li.active a {
+    color: var(--wshc-white);
+    background: #1a1a1a;
+}
+
+.wshc-logout {
+    margin-top: 40px;
+    border-top: 1px solid #333;
+}
+
+/* Content Area */
+#wshc-content {
+    flex: 1;
+    background: var(--wshc-gray-light);
+    padding: 40px;
+}
+
+.wshc-content-header {
+    margin-bottom: 40px;
+    border-bottom: 2px solid var(--wshc-black);
+    padding-bottom: 10px;
+}
+
+.wshc-content-header h2 {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.wshc-card {
+    background: var(--wshc-white);
+    padding: 30px;
+    border: var(--wshc-border);
+    margin-bottom: 30px;
+}
+
+.wshc-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.wshc-stat-card {
+    background: var(--wshc-white);
+    padding: 20px;
+    border: var(--wshc-border);
+    text-align: center;
+}
+
+.wshc-stat-label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--wshc-gray-dark);
+    margin-bottom: 5px;
+}
+
+.wshc-stat-value {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* Responsive & Mobile Nav */
+.wshc-mobile-nav {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: var(--wshc-black);
+    color: var(--wshc-white);
+}
+
+#wshc-hamburger {
+    background: none;
+    border: none;
+    width: 30px;
+    height: 20px;
+    position: relative;
+    cursor: pointer;
+}
+
+#wshc-hamburger span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--wshc-white);
+    position: absolute;
+    transition: 0.3s;
+}
+
+#wshc-hamburger span:nth-child(1) { top: 0; }
+#wshc-hamburger span:nth-child(2) { top: 9px; }
+#wshc-hamburger span:nth-child(3) { top: 18px; }
+
+#wshc-hamburger.open span:nth-child(1) { transform: rotate(45deg); top: 9px; }
+#wshc-hamburger.open span:nth-child(2) { opacity: 0; }
+#wshc-hamburger.open span:nth-child(3) { transform: rotate(-45deg); top: 9px; }
+
+@media (max-width: 991px) {
+    .wshc-mobile-nav { display: flex; }
+    
+    #wshc-sidebar {
+        position: fixed;
+        left: 0;
+        top: 50px;
+        z-index: 999;
+        transform: translateX(-100%);
+        width: 100%;
+    }
+    
+    #wshc-sidebar.active {
+        transform: translateX(0);
+    }
+    
+    #wshc-content {
+        padding: 20px;
+    }
+}
+
+/* API Responses */
+#wshc-api-response {
+    margin-top: 20px;
+    font-size: 14px;
+    text-align: center;
+}
+
+#wshc-api-response .success { color: #27ae60; }
+#wshc-api-response .error { color: #c0392b; }
+.wshc-alert.success { 
+    background: #e8f5e9; 
+    color: #2e7d32; 
+    padding: 15px; 
+    text-align: center;
+    margin-bottom: 20px;
+    border: 1px solid #c8e6c9;
+}
