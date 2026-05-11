@@ -85,9 +85,9 @@
                             'global-settings'    => 'modules/admin/settings',
                         );
 
-                        // Ensure we use 'user-directory' if view is not found in primary map but is a valid admin view
-                        $initial_template_key = isset( $template_map[ $current_view ] ) ? $current_view : 'overview';
-                        $initial_template = $template_map[ $initial_template_key ];
+                        // Ensure we use 'overview' as fallback and handle admin mapping correctly
+                        $view_slug = isset( $_GET['view'] ) ? sanitize_text_field( $_GET['view'] ) : 'overview';
+                        $initial_template = isset( $template_map[ $view_slug ] ) ? $template_map[ $view_slug ] : 'modules/overview';
 
                         $dashboard->get_template( $initial_template, array( 'current_user' => $current_user ) );
                     ?>

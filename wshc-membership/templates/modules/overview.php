@@ -48,6 +48,14 @@ $is_admin = current_user_can( 'manage_wshc_users' ) || current_user_can( 'manage
             </span>
         </div>
     </div>
+
+    <div class="wshc-card" style="margin-top: 20px;">
+        <h4><?php _e( 'Administrative Quick Actions', 'wshc-membership' ); ?></h4>
+        <div class="wshc-quick-actions" style="display: flex; gap: 10px; margin-top: 15px;">
+            <a href="#" data-view="user-directory" class="wshc-btn-action" style="padding: 10px 20px;"><?php _e( 'Manage All Users', 'wshc-membership' ); ?></a>
+            <button id="wshc-settings-toggle-shortcut" class="wshc-btn-action" style="padding: 10px 20px;"><?php _e( 'System Settings', 'wshc-membership' ); ?></button>
+        </div>
+    </div>
 </div>
 <?php endif; ?>
 
