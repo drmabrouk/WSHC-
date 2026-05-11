@@ -41,7 +41,7 @@ class WSHC_Dashboard {
 		$items = array(
 			'primary' => array(
 				'overview' => array(
-					'label' => __( 'Overview', 'wshc-membership' ),
+					'label' => __( 'Dashboard', 'wshc-membership' ),
 					'icon'  => 'dashicons-dashboard',
 				),
 				'profile' => array(
@@ -89,7 +89,7 @@ class WSHC_Dashboard {
 
 			// User Directory exclusive to System Admin/WP Admin
 			$items['management']['user-directory'] = array(
-				'label' => __( 'User Directory', 'wshc-membership' ),
+				'label' => __( 'System Users Management', 'wshc-membership' ),
 				'icon'  => 'dashicons-groups',
 			);
 

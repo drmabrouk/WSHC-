@@ -79,6 +79,15 @@ jQuery(document).ready(function($) {
                 }
             });
 
+            // User Directory: Delete User
+            $(document).on('click', '.wshc-delete-user', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+                    const userId = $(this).data('id');
+                    self.deleteUser(userId);
+                }
+            });
+
             // Modal: Close
             $(document).on('click', '.wshc-modal-close', function() {
                 $('#wshc-user-modal').fadeOut();
@@ -254,6 +263,7 @@ jQuery(document).ready(function($) {
                                             <button class="wshc-btn-action wshc-edit-user" data-user='${userJson}' title="Edit Profile">Edit</button>
                                             <button class="wshc-btn-action wshc-elevate-user" data-id="${user.ID}" title="Elevate Role">Elevate</button>
                                             <button class="wshc-btn-action wshc-suspend-user" data-id="${user.ID}" title="Suspend Account">Suspend</button>
+                                            <button class="wshc-btn-action wshc-delete-user" data-id="${user.ID}" title="Delete User">Delete</button>
                                         </td>
                                     </tr>
                                 `;
@@ -357,6 +367,27 @@ jQuery(document).ready(function($) {
                 success: function(response) {
                     alert(response.data.message);
                     $btn.prop('disabled', false).text('Save Profile Details');
+                }
+            });
+        },
+
+        deleteUser: function(userId) {
+            const self = this;
+            $.ajax({
+                url: wshc_vars.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'wshc_admin_delete_user',
+                    security: wshc_vars.nonce,
+                    user_id: userId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.data.message);
+                        self.loadUsers($('.wshc-pagination a.active').data('page') || 1);
+                    } else {
+                        alert(response.data.message);
+                    }
                 }
             });
         },

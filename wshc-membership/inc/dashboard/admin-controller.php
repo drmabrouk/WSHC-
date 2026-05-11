@@ -18,6 +18,7 @@ class WSHC_Admin_Controller {
 	private function __construct() {
 		add_action( 'wp_ajax_wshc_admin_get_users', array( $this, 'ajax_get_users' ) );
 		add_action( 'wp_ajax_wshc_admin_update_user', array( $this, 'ajax_update_user' ) );
+		add_action( 'wp_ajax_wshc_admin_delete_user', array( $this, 'ajax_delete_user' ) );
 	}
 
 	public function ajax_get_users() {
@@ -78,12 +79,12 @@ class WSHC_Admin_Controller {
 		}
 
 		$user_id = absint( $_POST['user_id'] );
-		$role    = sanitize_text_field( $_POST['role'] );
-		$status  = sanitize_text_field( $_POST['status'] );
-		$id_verified = absint( $_POST['id_verified'] );
-		$username    = sanitize_user( $_POST['username'] );
-		$registered  = sanitize_text_field( $_POST['user_registered'] );
-        $credentials = sanitize_textarea_field( $_POST['credentials'] );
+		$role    = isset( $_POST['role'] ) ? sanitize_text_field( $_POST['role'] ) : '';
+		$status  = isset( $_POST['status'] ) ? sanitize_text_field( $_POST['status'] ) : '';
+		$id_verified = isset( $_POST['id_verified'] ) ? absint( $_POST['id_verified'] ) : null;
+		$username    = isset( $_POST['username'] ) ? sanitize_user( $_POST['username'] ) : '';
+		$registered  = isset( $_POST['user_registered'] ) ? sanitize_text_field( $_POST['user_registered'] ) : '';
+        $credentials = isset( $_POST['credentials'] ) ? sanitize_textarea_field( $_POST['credentials'] ) : '';
 
 		if ( ! $user_id ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid user ID.', 'wshc-membership' ) ) );
@@ -94,31 +95,37 @@ class WSHC_Admin_Controller {
 			wp_send_json_error( array( 'message' => __( 'User not found.', 'wshc-membership' ) ) );
 		}
 
-		// Validate Role
-		$allowed_roles = WSHC_Roles::get_instance()->get_hierarchy();
-		if ( ! in_array( $role, $allowed_roles ) ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid role selected.', 'wshc-membership' ) ) );
-		}
+		// Validate and Update Role
+		if ( $role ) {
+			$allowed_roles = WSHC_Roles::get_instance()->get_hierarchy();
+			if ( ! in_array( $role, $allowed_roles ) ) {
+				wp_send_json_error( array( 'message' => __( 'Invalid role selected.', 'wshc-membership' ) ) );
+			}
 
-		// Update Role
-		$old_role = $user->roles[0];
-		$user->set_role( $role );
-
-		// Log Role Change
-		if ( $old_role !== $role ) {
-			$this->log_action( sprintf( 'Role changed from %s to %s', $old_role, $role ), $user_id );
+			$old_role = $user->roles[0];
+			if ( $old_role !== $role ) {
+				$user->set_role( $role );
+				$this->log_action( sprintf( 'Role changed from %s to %s', $old_role, $role ), $user_id );
+			}
 		}
 
 		// Update Status (Verification)
-		$old_status = get_user_meta( $user_id, 'wshc_verified', true ) ? 'Verified' : 'Pending';
-		if ( $old_status !== $status ) {
-			$this->log_action( sprintf( 'Status changed from %s to %s', $old_status, $status ), $user_id );
+		if ( $status ) {
+			$old_status = get_user_meta( $user_id, 'wshc_verified', true ) ? 'Verified' : 'Pending';
+			if ( $old_status !== $status ) {
+				$this->log_action( sprintf( 'Status changed from %s to %s', $old_status, $status ), $user_id );
+			}
+			update_user_meta( $user_id, 'wshc_verified', $status === 'Verified' ? 1 : 0 );
 		}
-		update_user_meta( $user_id, 'wshc_verified', $status === 'Verified' ? 1 : 0 );
-		update_user_meta( $user_id, 'wshc_id_verified', $id_verified );
+
+		if ( null !== $id_verified ) {
+			update_user_meta( $user_id, 'wshc_id_verified', $id_verified );
+		}
 
         // Update Credentials
-        update_user_meta( $user_id, 'wshc_credentials', $credentials );
+		if ( isset( $_POST['credentials'] ) ) {
+		update_user_meta( $user_id, 'wshc_credentials', $credentials );
+		}
 
 		// Update Username & Registration Date
 		global $wpdb;
@@ -137,6 +144,33 @@ class WSHC_Admin_Controller {
 		}
 
 		wp_send_json_success( array( 'message' => __( 'User updated successfully.', 'wshc-membership' ) ) );
+	}
+
+	public function ajax_delete_user() {
+		check_ajax_referer( 'wshc_nonce', 'security' );
+
+		if ( ! current_user_can( 'manage_wshc_users' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Access Denied.', 'wshc-membership' ) ) );
+		}
+
+		$user_id = absint( $_POST['user_id'] );
+
+		if ( ! $user_id || $user_id === get_current_user_id() ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid user ID.', 'wshc-membership' ) ) );
+		}
+
+		$user = get_userdata( $user_id );
+		if ( ! $user ) {
+			wp_send_json_error( array( 'message' => __( 'User not found.', 'wshc-membership' ) ) );
+		}
+
+		require_once( ABSPATH . 'wp-admin/includes/user.php' );
+		if ( wp_delete_user( $user_id ) ) {
+			$this->log_action( __( 'User deleted.', 'wshc-membership' ), $user_id );
+			wp_send_json_success( array( 'message' => __( 'User deleted successfully.', 'wshc-membership' ) ) );
+		} else {
+			wp_send_json_error( array( 'message' => __( 'Failed to delete user.', 'wshc-membership' ) ) );
+		}
 	}
 
 	private function log_action( $action, $target_user_id ) {
