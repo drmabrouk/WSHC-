@@ -147,13 +147,14 @@ class WSHC_User_Update_Handler {
     public function ajax_update_meta() {
         check_ajax_referer( 'wshc_nonce', 'security' );
 
-		if ( ! is_user_logged_in() ) {
+		$user_id = is_user_logged_in() ? get_current_user_id() : (isset($_POST['user_id']) ? absint($_POST['user_id']) : 0);
+
+		if ( ! $user_id ) {
 			wp_send_json_error( array( 'message' => __( 'Access Denied.', 'wshc-membership' ) ) );
 		}
 
-        $user_id = get_current_user_id();
         $bio = sanitize_textarea_field( $_POST['bio'] );
-        $visibility = sanitize_text_field( $_POST['visibility'] );
+        $visibility = isset($_POST['visibility']) ? sanitize_text_field( $_POST['visibility'] ) : 'public';
         $degree = sanitize_text_field( $_POST['degree'] );
         $specialization = sanitize_text_field( $_POST['specialization'] );
         $license = sanitize_text_field( $_POST['license'] );

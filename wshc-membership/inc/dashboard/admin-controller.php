@@ -127,11 +127,13 @@ class WSHC_Admin_Controller {
 		if ( $username && $username !== $user->user_login ) {
 			if ( ! username_exists( $username ) ) {
 				$update_fields['user_login'] = $username;
+                $update_fields['user_nicename'] = sanitize_title( $username );
 			}
 		}
 
 		if ( ! empty( $update_fields ) ) {
 			$wpdb->update( $wpdb->users, $update_fields, array( 'ID' => $user_id ) );
+            clean_user_cache( $user_id );
 		}
 
 		wp_send_json_success( array( 'message' => __( 'User updated successfully.', 'wshc-membership' ) ) );

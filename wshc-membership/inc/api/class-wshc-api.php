@@ -128,7 +128,10 @@ class WSHC_API {
 			wp_set_current_user( $user_id );
 			wp_set_auth_cookie( $user_id, true );
 
-			wp_send_json_success( array( 'message' => __( 'Account activated! Redirecting to portal...', 'wshc-membership' ) ) );
+			wp_send_json_success( array(
+                'message' => __( 'Account activated! Redirecting to portal...', 'wshc-membership' ),
+                'new_nonce' => wp_create_nonce( 'wshc_nonce' ) // Refresh nonce for Step 3
+            ) );
 		} else {
 			wp_send_json_error( array( 'message' => __( 'Invalid OTP. Please try again.', 'wshc-membership' ) ) );
 		}

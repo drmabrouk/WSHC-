@@ -94,6 +94,16 @@
                         <h2><?php _e( 'Professional Profile', 'wshc-membership' ); ?></h2>
                         <div class="wshc-field-group">
                             <div class="wshc-field wshc-floating">
+                                <input type="text" name="institution" id="reg-inst" placeholder=" ">
+                                <label for="reg-inst"><?php _e( 'Institution', 'wshc-membership' ); ?></label>
+                            </div>
+                            <div class="wshc-field wshc-floating">
+                                <input type="text" name="degree" id="reg-degree" placeholder=" ">
+                                <label for="reg-degree"><?php _e( 'Academic Degree', 'wshc-membership' ); ?></label>
+                            </div>
+                        </div>
+                        <div class="wshc-field-group">
+                            <div class="wshc-field wshc-floating">
                                 <select name="specialization" id="reg-spec">
                                     <option value="Sports Medicine"><?php _e( 'Sports Medicine', 'wshc-membership' ); ?></option>
                                     <option value="Athletic Training"><?php _e( 'Athletic Training', 'wshc-membership' ); ?></option>

@@ -144,6 +144,15 @@ jQuery(document).ready(function($) {
         handleInitialView: function() {
             const urlParams = new URLSearchParams(window.location.search);
             const view = urlParams.get('view');
+
+            // If we have a view in URL, and it matches what's already there, just init if needed
+            if (view && view === $('#wshc-dynamic-content').attr('data-active-view')) {
+                if (view === 'user-directory') {
+                    this.loadUsers(1);
+                }
+                return;
+            }
+
             if (view) {
                 const label = $(`#wshc-sidebar a[data-view="${view}"]`).text().trim();
                 this.loadView(view, label, false);
@@ -156,8 +165,8 @@ jQuery(document).ready(function($) {
             const self = this;
             const $container = $('#wshc-dynamic-content');
 
-            // State Locking Mechanism
-            if ($container.attr('data-active-view') === view && updatePushState) return;
+            // State Locking Mechanism - Prevent redundant loads
+            if ($container.attr('data-active-view') === view) return;
 
             // Wipe container and show loading
             $container.empty().attr('data-active-view', 'loading');
