@@ -2,6 +2,9 @@
     <!-- Top-Bar Header -->
     <header class="wshc-top-bar">
         <div class="wshc-top-bar-left">
+            <button id="wshc-hamburger" class="wshc-hamburger" title="<?php _e( 'Toggle Menu', 'wshc-membership' ); ?>">
+                <span class="dashicons dashicons-menu"></span>
+            </button>
             <div class="wshc-brand">
                 <?php echo current_user_can( 'manage_wshc_users' ) ? __( 'System Dashboard', 'wshc-membership' ) : __( 'My Account', 'wshc-membership' ); ?>
             </div>

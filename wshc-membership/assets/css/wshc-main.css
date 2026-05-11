@@ -194,7 +194,16 @@ body { margin: 0; padding: 0; }
     display: flex;
     flex-direction: column;
     height: 100vh;
+    width: 100%;
     overflow: hidden;
+}
+
+.wshc-dashboard-wrapper {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    width: 100%;
+    position: relative;
 }
 
 .wshc-top-bar {
@@ -205,22 +214,33 @@ body { margin: 0; padding: 0; }
     justify-content: space-between;
     align-items: center;
     padding: 0 30px;
-    padding-left: calc(var(--sidebar-width) + 30px);
     flex: 0 0 70px;
     z-index: 1001;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
 }
+
+.wshc-hamburger {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin-right: 15px;
+    color: #FFF;
+}
+
+.wshc-hamburger .dashicons { font-size: 24px; width: 24px; height: 24px; }
 
 #wshc-sidebar {
     width: var(--sidebar-width);
     background: var(--wshc-black);
     color: var(--wshc-white);
     flex: 0 0 var(--sidebar-width);
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    overflow-y: hidden;
+    height: 100%;
+    position: relative;
+    overflow-y: auto;
     z-index: 1002;
+    transition: left 0.3s ease;
 }
 
 .wshc-nav li a {
@@ -241,11 +261,11 @@ body { margin: 0; padding: 0; }
 }
 
 #wshc-content {
-    flex: 1 1 auto;
+    flex: 1;
     background: #F8F9FA;
     padding: 40px;
-    margin-left: var(--sidebar-width);
     overflow-y: auto;
+    position: relative;
 }
 
 .wshc-content-header { margin-bottom: 15px; border-bottom: 2px solid var(--wshc-black); padding-bottom: 5px; }
@@ -365,3 +385,25 @@ body { margin: 0; padding: 0; }
 .spin { animation: wshc-spin 1s infinite linear; }
 @keyframes wshc-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 .wshc-char-counter { text-align: right; font-size: 10px; color: #999; margin-top: 5px; }
+
+/* Responsive Dashboard */
+@media (max-width: 992px) {
+    .wshc-hamburger { display: block; }
+
+    #wshc-sidebar {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        height: calc(100vh - 70px);
+    }
+
+    #wshc-sidebar.active { left: 0; }
+
+    #wshc-content {
+        padding: 20px;
+    }
+
+    .wshc-top-bar {
+        padding: 0 15px;
+    }
+}
