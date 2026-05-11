@@ -117,6 +117,10 @@ jQuery(document).ready(function($) {
                 },
                 success: function(response) {
                     if (response.success) {
+                        // Refresh global nonce for subsequent authenticated calls
+                        if (response.data.new_nonce) {
+                            wshc_vars.nonce = response.data.new_nonce;
+                        }
                         self.goToStep(3);
                     } else {
                         $('#wshc-api-response').html('<p class="error">' + response.data.message + '</p>');
