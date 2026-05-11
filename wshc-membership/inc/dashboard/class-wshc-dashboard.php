@@ -38,10 +38,27 @@ class WSHC_Dashboard {
 		$user = wp_get_current_user();
 		$roles = (array) $user->roles;
 
+		// Administrators see a restricted, focused menu
+		if ( current_user_can( 'manage_wshc_users' ) || current_user_can( 'manage_options' ) ) {
+			return array(
+				'primary' => array(
+					'overview' => array(
+						'label' => __( 'Dashboard', 'wshc-membership' ),
+						'icon'  => 'dashicons-dashboard',
+					),
+					'user-directory' => array(
+						'label' => __( 'System Users Management', 'wshc-membership' ),
+						'icon'  => 'dashicons-groups',
+					),
+				)
+			);
+		}
+
+		// Standard User Menu
 		$items = array(
 			'primary' => array(
 				'overview' => array(
-					'label' => __( 'Dashboard', 'wshc-membership' ),
+					'label' => __( 'Overview', 'wshc-membership' ),
 					'icon'  => 'dashicons-dashboard',
 				),
 				'profile' => array(
@@ -63,7 +80,7 @@ class WSHC_Dashboard {
 		$professional_tools = array();
 
 		// Scientific Researcher and above
-		$research_roles = array( 'scientific_researcher', 'board_certified_member', 'fellow', 'institutional_partner', 'chairman_scientific_committee', 'regional_director', 'general_manager', 'system_administrator', 'administrator' );
+		$research_roles = array( 'scientific_researcher', 'board_certified_member', 'fellow', 'institutional_partner', 'chairman_scientific_committee', 'regional_director', 'general_manager' );
 		if ( array_intersect( $roles, $research_roles ) ) {
 			$professional_tools['scientific-reports'] = array(
 				'label' => __( 'Scientific Reports', 'wshc-membership' ),
@@ -81,29 +98,6 @@ class WSHC_Dashboard {
 
 		if ( ! empty( $professional_tools ) ) {
 			$items['professional'] = $professional_tools;
-		}
-
-		// Management Group (Gated by manage_wshc_users or manage_options for native Admins)
-		if ( current_user_can( 'manage_wshc_users' ) || current_user_can( 'manage_options' ) ) {
-			$items['management'] = array();
-
-			// User Directory exclusive to System Admin/WP Admin
-			$items['management']['user-directory'] = array(
-				'label' => __( 'System Users Management', 'wshc-membership' ),
-				'icon'  => 'dashicons-groups',
-			);
-
-			// System Admin exclusive modules
-			if ( current_user_can( 'manage_wshc_users' ) || current_user_can( 'manage_options' ) ) {
-				$items['management']['system-logs'] = array(
-					'label' => __( 'System Logs', 'wshc-membership' ),
-					'icon'  => 'dashicons-list-view',
-				);
-				$items['management']['global-settings'] = array(
-					'label' => __( 'Global Settings', 'wshc-membership' ),
-					'icon'  => 'dashicons-admin-generic',
-				);
-			}
 		}
 
 		return $items;

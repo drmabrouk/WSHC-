@@ -72,7 +72,7 @@
                 </div>
                 <div id="wshc-dynamic-content" data-active-view="<?php echo esc_attr( $current_view ); ?>">
                     <?php
-                        // Initial Load based on current view mapping
+                        // Synchronize template mapping with AJAX handler
                         $template_map = array(
                             'overview'           => 'modules/overview',
                             'profile'            => 'modules/profile',
@@ -84,7 +84,11 @@
                             'system-logs'        => 'modules/admin/logs',
                             'global-settings'    => 'modules/admin/settings',
                         );
-                        $initial_template = isset( $template_map[ $current_view ] ) ? $template_map[ $current_view ] : 'modules/overview';
+
+                        // Ensure we use 'user-directory' if view is not found in primary map but is a valid admin view
+                        $initial_template_key = isset( $template_map[ $current_view ] ) ? $current_view : 'overview';
+                        $initial_template = $template_map[ $initial_template_key ];
+
                         $dashboard->get_template( $initial_template, array( 'current_user' => $current_user ) );
                     ?>
                 </div>
