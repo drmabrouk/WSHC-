@@ -152,22 +152,24 @@ jQuery(document).ready(function($) {
 
         handleInitialView: function() {
             const urlParams = new URLSearchParams(window.location.search);
-            const view = urlParams.get('view');
+            let view = urlParams.get('view');
+            const $container = $('#wshc-dynamic-content');
+            const activeView = $container.attr('data-active-view');
 
-            // If we have a view in URL, and it matches what's already there, just init if needed
-            if (view && view === $('#wshc-dynamic-content').attr('data-active-view')) {
+            // Default view if none specified
+            if (!view) view = 'overview';
+
+            // If the current container already has the correct view, just initialize modules
+            if (view === activeView) {
                 if (view === 'user-directory') {
                     this.loadUsers(1);
                 }
                 return;
             }
 
-            if (view) {
-                const label = $(`#wshc-sidebar a[data-view="${view}"]`).text().trim();
-                this.loadView(view, label, false);
-            } else if ($('#wshc-user-table').length) {
-                this.loadUsers(1);
-            }
+            // Otherwise, load the requested view
+            const label = $(`#wshc-sidebar a[data-view="${view}"]`).text().trim();
+            this.loadView(view, label || 'Dashboard', false);
         },
 
         loadView: function(view, label, updatePushState = true) {
