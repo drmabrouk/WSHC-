@@ -15,7 +15,7 @@ jQuery(document).ready(function($) {
             });
 
             // AJAX View Routing - With Content Persistence Shield
-            $(document).on('click', '#wshc-sidebar a[data-view]', function(e) {
+            $(document).on('click', 'a[data-view]', function(e) {
                 e.preventDefault();
                 e.stopImmediatePropagation(); // Prevent Conflict
                 const view = $(this).data('view');
@@ -122,7 +122,7 @@ jQuery(document).ready(function($) {
             });
 
             // Settings: Toggle Modal
-            $(document).on('click', '#wshc-settings-toggle', function(e) {
+            $(document).on('click', '#wshc-settings-toggle, #wshc-settings-toggle-shortcut', function(e) {
                 e.preventDefault();
                 $('#wshc-settings-modal').css('display', 'flex').hide().fadeIn(200);
             });
@@ -152,14 +152,15 @@ jQuery(document).ready(function($) {
 
         handleInitialView: function() {
             const urlParams = new URLSearchParams(window.location.search);
-            let view = urlParams.get('view');
+            let view = urlParams.get('view') || 'overview';
             const $container = $('#wshc-dynamic-content');
             const activeView = $container.attr('data-active-view');
 
-            // Default view if none specified
-            if (!view) view = 'overview';
+            // Set initial active state in sidebar
+            $('#wshc-sidebar li').removeClass('active');
+            $(`#wshc-sidebar a[data-view="${view}"]`).parent().addClass('active');
 
-            // If the current container already has the correct view, just initialize modules
+            // If the current container already has the correct view (server-rendered), just initialize modules
             if (view === activeView) {
                 if (view === 'user-directory') {
                     this.loadUsers(1);
@@ -167,21 +168,23 @@ jQuery(document).ready(function($) {
                 return;
             }
 
-            // Otherwise, load the requested view
-            const label = $(`#wshc-sidebar a[data-view="${view}"]`).text().trim();
-            this.loadView(view, label || 'Dashboard', false);
+            // Otherwise, force load the requested view to ensure consistency
+            const $link = $(`#wshc-sidebar a[data-view="${view}"]`);
+            const label = $link.length ? $link.text().trim() : 'Dashboard';
+            this.loadView(view, label, false);
         },
 
         loadView: function(view, label, updatePushState = true) {
             const self = this;
             const $container = $('#wshc-dynamic-content');
 
-            // State Locking Mechanism - Prevent redundant loads
-            if ($container.attr('data-active-view') === view) return;
+            // State Locking Mechanism - Prevent redundant loads during active AJAX
+            if ($container.attr('data-active-view') === 'loading') return;
+            if (updatePushState && $container.attr('data-active-view') === view) return;
 
-            // Wipe container and show loading
-            $container.empty().attr('data-active-view', 'loading');
-            $('.wshc-loading-overlay').fadeIn(100);
+            // Show loading
+            $('.wshc-loading-overlay').stop(true, true).fadeIn(100);
+            $container.css('opacity', '0.5');
 
             $.ajax({
                 url: wshc_vars.ajax_url,
@@ -210,13 +213,15 @@ jQuery(document).ready(function($) {
                             self.loadUsers(1);
                         }
                     } else {
-                        $container.html(`<p class="error">${response.data.message}</p>`).attr('data-active-view', 'error');
+                        $container.html(`<div class="wshc-card"><p class="error">${response.data.message}</p></div>`).attr('data-active-view', 'error');
                     }
-                    $('.wshc-loading-overlay').fadeOut(100);
                 },
                 error: function() {
-                    $container.html('<p class="error">Failed to load view.</p>').attr('data-active-view', 'error');
+                    $container.html('<div class="wshc-card"><p class="error">Failed to load view. Please check your connection.</p></div>').attr('data-active-view', 'error');
+                },
+                complete: function() {
                     $('.wshc-loading-overlay').fadeOut(100);
+                    $container.css('opacity', '1');
                 }
             });
 

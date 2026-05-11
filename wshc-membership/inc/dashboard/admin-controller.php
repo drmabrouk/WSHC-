@@ -36,8 +36,12 @@ class WSHC_Admin_Controller {
 		$args = array(
 			'number' => $per_page,
 			'offset' => ( $page - 1 ) * $per_page,
-			'search' => $search ? "*{$search}*" : '',
 		);
+
+		if ( $search ) {
+			$args['search']         = "*{$search}*";
+			$args['search_columns'] = array( 'user_login', 'user_email', 'display_name' );
+		}
 
 		if ( $role ) {
 			$args['role'] = $role;
