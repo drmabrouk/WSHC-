@@ -160,18 +160,17 @@ jQuery(document).ready(function($) {
             $('#wshc-sidebar li').removeClass('active');
             $(`#wshc-sidebar a[data-view="${view}"]`).parent().addClass('active');
 
-            // If the current container already has the correct view (server-rendered), just initialize modules
-            if (view === activeView) {
+            // Check if container is empty OR if the view is not matching
+            if ($container.is(':empty') || view !== activeView) {
+                const $link = $(`#wshc-sidebar a[data-view="${view}"]`);
+                const label = $link.length ? $link.text().trim() : 'Dashboard';
+                this.loadView(view, label, false);
+            } else {
+                // Initialize specific views if they were server-rendered
                 if (view === 'user-directory') {
                     this.loadUsers(1);
                 }
-                return;
             }
-
-            // Otherwise, force load the requested view to ensure consistency
-            const $link = $(`#wshc-sidebar a[data-view="${view}"]`);
-            const label = $link.length ? $link.text().trim() : 'Dashboard';
-            this.loadView(view, label, false);
         },
 
         loadView: function(view, label, updatePushState = true) {

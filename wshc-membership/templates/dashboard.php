@@ -52,27 +52,30 @@
 
         <!-- Main Content Area -->
         <main id="wshc-content">
+            <?php
+                $view_slug = isset( $_GET['view'] ) ? sanitize_text_field( $_GET['view'] ) : 'overview';
+
+                // Determine Professional Title
+                $view_title = __( 'Dashboard', 'wshc-membership' );
+                foreach ( $menu_items as $group ) {
+                    if ( isset( $group[ $view_slug ] ) ) {
+                        $view_title = $group[ $view_slug ]['label'];
+                        break;
+                    }
+                }
+            ?>
             <div class="wshc-content-header">
-                <h2 id="wshc-view-title">
-                    <?php
-                        $current_view = isset( $_GET['view'] ) ? sanitize_text_field( $_GET['view'] ) : 'overview';
-                        foreach ( $menu_items as $group ) {
-                            if ( isset( $group[ $current_view ] ) ) {
-                                echo esc_html( $group[ $current_view ]['label'] );
-                                break;
-                            }
-                        }
-                    ?>
-                </h2>
+                <h2 id="wshc-view-title"><?php echo esc_html( $view_title ); ?></h2>
             </div>
             
             <div id="wshc-main-content">
                 <div class="wshc-loading-overlay" style="display:none;">
-                    <span class="dashicons dashicons-update spin"></span>
+                    <div class="wshc-spinner-container">
+                        <span class="dashicons dashicons-update spin"></span>
+                    </div>
                 </div>
-                <div id="wshc-dynamic-content" data-active-view="<?php echo esc_attr( $current_view ); ?>">
+                <div id="wshc-dynamic-content" data-active-view="<?php echo esc_attr( $view_slug ); ?>">
                     <?php
-                        // Synchronize template mapping with AJAX handler
                         $template_map = array(
                             'overview'           => 'modules/overview',
                             'profile'            => 'modules/profile',
@@ -85,10 +88,7 @@
                             'global-settings'    => 'modules/admin/settings',
                         );
 
-                        // Ensure we use 'overview' as fallback and handle admin mapping correctly
-                        $view_slug = isset( $_GET['view'] ) ? sanitize_text_field( $_GET['view'] ) : 'overview';
                         $initial_template = isset( $template_map[ $view_slug ] ) ? $template_map[ $view_slug ] : 'modules/overview';
-
                         $dashboard->get_template( $initial_template, array( 'current_user' => $current_user ) );
                     ?>
                 </div>
