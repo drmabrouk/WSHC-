@@ -30,6 +30,7 @@ class WSHC_Admin_Controller {
 
 		$search = isset( $_POST['search'] ) ? sanitize_text_field( $_POST['search'] ) : '';
 		$role   = isset( $_POST['role'] ) ? sanitize_text_field( $_POST['role'] ) : '';
+		$status = isset( $_POST['status'] ) ? sanitize_text_field( $_POST['status'] ) : '';
 		$page   = isset( $_POST['page'] ) ? absint( $_POST['page'] ) : 1;
 		$per_page = 10;
 
@@ -40,11 +41,21 @@ class WSHC_Admin_Controller {
 
 		if ( $search ) {
 			$args['search']         = "*{$search}*";
-			$args['search_columns'] = array( 'user_login', 'user_email', 'display_name' );
+			$args['search_columns'] = array( 'user_login', 'user_email', 'display_name', 'nicename' );
 		}
 
 		if ( $role ) {
 			$args['role'] = $role;
+		}
+
+		if ( $status ) {
+			$args['meta_query'] = array(
+				array(
+					'key'     => 'wshc_verified',
+					'value'   => $status === 'verified' ? 1 : 0,
+					'compare' => '='
+				)
+			);
 		}
 
 		$user_query = new WP_User_Query( $args );
