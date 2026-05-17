@@ -13,6 +13,11 @@
                         }
                     ?>
                 </select>
+                <select id="wshc-status-filter">
+                    <option value=""><?php _e( 'All Statuses', 'wshc-membership' ); ?></option>
+                    <option value="verified"><?php _e( 'Verified', 'wshc-membership' ); ?></option>
+                    <option value="pending"><?php _e( 'Pending', 'wshc-membership' ); ?></option>
+                </select>
             </div>
         </div>
 

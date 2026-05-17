@@ -39,7 +39,7 @@ jQuery(document).ready(function($) {
                 self.loadUsers(1);
             }, 300));
 
-            $(document).on('change', '#wshc-role-filter', function() {
+            $(document).on('change', '#wshc-role-filter, #wshc-status-filter', function() {
                 self.loadUsers(1);
             });
 
@@ -156,20 +156,17 @@ jQuery(document).ready(function($) {
             const $container = $('#wshc-dynamic-content');
             const activeView = $container.attr('data-active-view');
 
-            // Set initial active state in sidebar
+            // Synchronize Sidebar
             $('#wshc-sidebar li').removeClass('active');
             $(`#wshc-sidebar a[data-view="${view}"]`).parent().addClass('active');
 
-            // Check if container is empty OR if the view is not matching
-            if ($container.is(':empty') || view !== activeView) {
+            // If the view is correct and not empty, just init. Otherwise, full reload to prevent stale state.
+            if (view === activeView && !$container.is(':empty')) {
+                this.initSection(view);
+            } else {
                 const $link = $(`#wshc-sidebar a[data-view="${view}"]`);
                 const label = $link.length ? $link.text().trim() : 'Dashboard';
                 this.loadView(view, label, false);
-            } else {
-                // Initialize specific views if they were server-rendered
-                if (view === 'user-directory') {
-                    this.loadUsers(1);
-                }
             }
         },
 
@@ -181,13 +178,15 @@ jQuery(document).ready(function($) {
             if ($container.attr('data-active-view') === 'loading') return;
             if (updatePushState && $container.attr('data-active-view') === view) return;
 
-            // Show loading
+            // Immediate UI Refresh
+            $container.html('').attr('data-active-view', 'loading');
+            $('#wshc-view-title').text(label);
             $('.wshc-loading-overlay').stop(true, true).fadeIn(100);
-            $container.css('opacity', '0.5');
 
             $.ajax({
                 url: wshc_vars.ajax_url,
                 type: 'POST',
+                cache: false,
                 data: {
                     action: 'wshc_load_view',
                     security: wshc_vars.nonce,
@@ -196,7 +195,6 @@ jQuery(document).ready(function($) {
                 success: function(response) {
                     if (response.success) {
                         $container.html(response.html).attr('data-active-view', view);
-                        $('#wshc-view-title').text(label);
 
                         // Mark active in sidebar
                         $('#wshc-sidebar li').removeClass('active');
@@ -207,10 +205,8 @@ jQuery(document).ready(function($) {
                             history.pushState({ view: view }, '', newUrl);
                         }
 
-                        // Handle unique view initializations
-                        if (view === 'user-directory') {
-                            self.loadUsers(1);
-                        }
+                        // Module Isolation: Independent section initialization
+                        self.initSection(view);
                     } else {
                         $container.html(`<div class="wshc-card"><p class="error">${response.data.message}</p></div>`).attr('data-active-view', 'error');
                     }
@@ -220,7 +216,6 @@ jQuery(document).ready(function($) {
                 },
                 complete: function() {
                     $('.wshc-loading-overlay').fadeOut(100);
-                    $container.css('opacity', '1');
                 }
             });
 
@@ -231,9 +226,17 @@ jQuery(document).ready(function($) {
             }
         },
 
+        initSection: function(view) {
+            if (view === 'user-directory') {
+                this.loadUsers(1);
+            }
+            // Add more section-specific initializations here as components scale
+        },
+
         loadUsers: function(page) {
             const search = $('#wshc-user-search').val();
             const role = $('#wshc-role-filter').val();
+            const status = $('#wshc-status-filter').val();
             const $tbody = $('#wshc-user-table tbody');
 
             $tbody.html('<tr><td colspan="5" style="text-align:center;">Loading users...</td></tr>');
@@ -246,6 +249,7 @@ jQuery(document).ready(function($) {
                     security: wshc_vars.nonce,
                     search: search,
                     role: role,
+                    status: status,
                     page: page
                 },
                 success: function(response) {

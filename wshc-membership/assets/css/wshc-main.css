@@ -37,17 +37,18 @@ body { margin: 0; padding: 0; }
 
 .wshc-auth-centering {
     width: 100%;
-    max-width: 580px;
+    max-width: 480px;
     padding: 20px;
 }
 
 .wshc-auth-container {
     background: var(--wshc-white);
-    padding: 50px;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.08);
     position: relative;
     overflow: hidden;
+    border: 1px solid #EEE;
 }
 
 .wshc-auth-view h2 {
@@ -434,8 +435,8 @@ body { margin: 0; padding: 0; }
 .wshc-stat-card {
     background: #FFF;
     border: 1px solid #EDEDED;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 15px;
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
