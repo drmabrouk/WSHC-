@@ -3,16 +3,31 @@
         <div class="wshc-directory-header">
             <h3><?php _e( 'User Directory', 'wshc-membership' ); ?></h3>
             <div class="wshc-directory-actions">
-                <input type="text" id="wshc-user-search" placeholder="<?php _e( 'Search users...', 'wshc-membership' ); ?>">
-                <select id="wshc-role-filter">
-                    <option value=""><?php _e( 'All Roles', 'wshc-membership' ); ?></option>
-                    <?php
-                        $roles = WSHC_Roles::get_instance()->get_hierarchy();
-                        foreach ( $roles as $role_id ) {
-                            echo '<option value="' . esc_attr( $role_id ) . '">' . esc_html( ucfirst( str_replace( '_', ' ', $role_id ) ) ) . '</option>';
-                        }
-                    ?>
-                </select>
+                <div class="wshc-search-bar">
+                    <span class="dashicons dashicons-search"></span>
+                    <input type="text" id="wshc-user-search" placeholder="<?php _e( 'Search by name, email or username...', 'wshc-membership' ); ?>">
+                </div>
+                <div class="wshc-filter-row">
+                    <select id="wshc-role-filter">
+                        <option value=""><?php _e( 'All Roles', 'wshc-membership' ); ?></option>
+                        <?php
+                            $roles = WSHC_Roles::get_instance()->get_hierarchy();
+                            foreach ( $roles as $role_id ) {
+                                echo '<option value="' . esc_attr( $role_id ) . '">' . esc_html( ucfirst( str_replace( '_', ' ', $role_id ) ) ) . '</option>';
+                            }
+                        ?>
+                    </select>
+                    <select id="wshc-status-filter">
+                        <option value=""><?php _e( 'All Statuses', 'wshc-membership' ); ?></option>
+                        <option value="Verified"><?php _e( 'Verified', 'wshc-membership' ); ?></option>
+                        <option value="Pending"><?php _e( 'Pending', 'wshc-membership' ); ?></option>
+                    </select>
+                    <select id="wshc-id-filter">
+                        <option value=""><?php _e( 'ID Verification', 'wshc-membership' ); ?></option>
+                        <option value="Yes"><?php _e( 'ID Verified', 'wshc-membership' ); ?></option>
+                        <option value="No"><?php _e( 'Not Verified', 'wshc-membership' ); ?></option>
+                    </select>
+                </div>
             </div>
         </div>
 

@@ -1,16 +1,22 @@
-<div id="wshc-auth-root" class="wshc-monochrome">
+<div id="wshc-auth-root" class="wshc-monochrome wshc-auth-boxed">
     <div class="wshc-auth-centering">
-        <div class="wshc-auth-container" data-state="login">
-            <!-- Progress Bar -->
-            <div id="wshc-reg-progress" class="wshc-progress-container" style="display:none;">
-                <div class="wshc-progress-bar"></div>
+        <div class="wshc-auth-box">
+            <div class="wshc-auth-header-logo">
+                <h1>WSHC</h1>
+                <span>Professional Portal</span>
             </div>
 
-            <div class="wshc-loading-overlay" style="display:none;">
-                <span class="dashicons dashicons-update spin"></span>
-            </div>
+            <div class="wshc-auth-container" data-state="login">
+                <!-- Progress Bar -->
+                <div id="wshc-reg-progress" class="wshc-progress-container" style="display:none;">
+                    <div class="wshc-progress-bar"></div>
+                </div>
 
-            <!-- Login View -->
+                <div class="wshc-loading-overlay" style="display:none;">
+                    <span class="dashicons dashicons-update spin"></span>
+                </div>
+
+                <!-- Login View -->
             <div id="wshc-login-view" class="wshc-auth-view">
                 <h2><?php _e( 'Sign In', 'wshc-membership' ); ?></h2>
                 <form id="wshc-login-form">
@@ -130,21 +136,22 @@
             </div>
 
             <!-- Recover View -->
-            <div id="wshc-recover-view" class="wshc-auth-view" style="display:none;">
-                <h2><?php _e( 'Recover Access', 'wshc-membership' ); ?></h2>
-                <form id="wshc-recover-form">
-                    <div class="wshc-field wshc-floating">
-                        <input type="text" name="user_login" id="recover-user" required placeholder=" ">
-                        <label for="recover-user"><?php _e( 'Username or Email', 'wshc-membership' ); ?></label>
-                    </div>
-                    <button type="submit" class="wshc-btn-primary"><?php _e( 'Send Recovery Link', 'wshc-membership' ); ?></button>
-                    <div class="wshc-auth-footer">
-                        <a href="#" class="wshc-switch" data-target="login"><?php _e( 'Return to Login', 'wshc-membership' ); ?></a>
-                    </div>
-                </form>
-            </div>
+                <div id="wshc-recover-view" class="wshc-auth-view" style="display:none;">
+                    <h2><?php _e( 'Recover Access', 'wshc-membership' ); ?></h2>
+                    <form id="wshc-recover-form">
+                        <div class="wshc-field wshc-floating">
+                            <input type="text" name="user_login" id="recover-user" required placeholder=" ">
+                            <label for="recover-user"><?php _e( 'Username or Email', 'wshc-membership' ); ?></label>
+                        </div>
+                        <button type="submit" class="wshc-btn-primary"><?php _e( 'Send Recovery Link', 'wshc-membership' ); ?></button>
+                        <div class="wshc-auth-footer">
+                            <a href="#" class="wshc-switch" data-target="login"><?php _e( 'Return to Login', 'wshc-membership' ); ?></a>
+                        </div>
+                    </form>
+                </div>
 
-            <div id="wshc-api-response"></div>
+                <div id="wshc-api-response"></div>
+            </div>
         </div>
     </div>
 </div>

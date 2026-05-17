@@ -41,11 +41,39 @@ body { margin: 0; padding: 0; }
     padding: 20px;
 }
 
+.wshc-auth-box {
+    background: var(--wshc-white);
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    border: 1px solid var(--wshc-gray-mid);
+    overflow: hidden;
+    width: 100%;
+}
+
+.wshc-auth-header-logo {
+    background: var(--wshc-black);
+    color: var(--wshc-white);
+    padding: 30px;
+    text-align: center;
+}
+
+.wshc-auth-header-logo h1 {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: 5px;
+    font-weight: 900;
+}
+
+.wshc-auth-header-logo span {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.7;
+}
+
 .wshc-auth-container {
     background: var(--wshc-white);
-    padding: 50px;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+    padding: 40px 50px;
     position: relative;
     overflow: hidden;
 }
@@ -223,14 +251,33 @@ body { margin: 0; padding: 0; }
     z-index: 1002;
 }
 
+.wshc-nav-group {
+    margin-bottom: 25px;
+}
+
+.wshc-nav-header {
+    padding: 10px 25px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #444;
+    margin: 0;
+}
+
 .wshc-nav li a {
     display: flex;
     align-items: center;
-    padding: 18px 25px;
+    padding: 12px 25px;
     color: #888;
     text-decoration: none;
     font-size: 13px;
     border: none !important;
+    transition: all 0.2s ease;
+}
+
+.wshc-nav li a:hover {
+    color: var(--wshc-white);
+    background: #0A0A0A;
 }
 
 .wshc-nav li.active a {
@@ -301,6 +348,56 @@ body { margin: 0; padding: 0; }
 .wshc-pro-grid { width: 100%; border-collapse: collapse; }
 .wshc-pro-grid th { text-align: left; padding: 15px; background: #F8F9FA; font-size: 11px; text-transform: uppercase; border-bottom: 2px solid var(--wshc-black); }
 .wshc-pro-grid td { padding: 15px; border-bottom: 1px solid #EEE; font-size: 14px; }
+
+/* Advanced Filtering UI */
+.wshc-directory-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.wshc-search-bar {
+    position: relative;
+    width: 100%;
+}
+
+.wshc-search-bar .dashicons {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.wshc-search-bar input {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    border: 1px solid var(--wshc-gray-mid);
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.wshc-search-bar input:focus {
+    border-color: var(--wshc-black);
+}
+
+.wshc-filter-row {
+    display: flex;
+    gap: 10px;
+}
+
+.wshc-filter-row select {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid var(--wshc-gray-mid);
+    border-radius: 8px;
+    font-size: 12px;
+    background: #FFF;
+    outline: none;
+}
 
 /* Identity Stack & Role Capsules */
 .wshc-user-menu {

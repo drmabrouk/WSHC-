@@ -39,7 +39,7 @@ jQuery(document).ready(function($) {
                 self.loadUsers(1);
             }, 300));
 
-            $(document).on('change', '#wshc-role-filter', function() {
+            $(document).on('change', '#wshc-role-filter, #wshc-status-filter, #wshc-id-filter', function() {
                 self.loadUsers(1);
             });
 
@@ -164,12 +164,16 @@ jQuery(document).ready(function($) {
         loadView: function(view, label, updatePushState = true) {
             const self = this;
             const $container = $('#wshc-dynamic-content');
+            const $mainWrapper = $('#wshc-main-content');
 
-            // State Locking Mechanism - Prevent redundant loads
-            if ($container.attr('data-active-view') === view) return;
+            // State Locking Mechanism - Prevent redundant loads if same view
+            if ($container.attr('data-active-view') === view && updatePushState) return;
 
-            // Wipe container and show loading
-            $container.empty().attr('data-active-view', 'loading');
+            // Force immediate visual feedback - Show global loader in main content area
+            $mainWrapper.find('.wshc-loading-overlay').fadeIn(150);
+
+            // Completely clear the container to ensure no "ghosting"
+            $container.css('opacity', '0.3');
             $('.wshc-loading-overlay').fadeIn(100);
 
             $.ajax({
@@ -182,7 +186,8 @@ jQuery(document).ready(function($) {
                 },
                 success: function(response) {
                     if (response.success) {
-                        $container.html(response.html).attr('data-active-view', view);
+                        // Immediate Replacement
+                        $container.empty().html(response.html).css('opacity', '1').attr('data-active-view', view);
                         $('#wshc-view-title').text(label);
 
                         // Mark active in sidebar
@@ -199,9 +204,9 @@ jQuery(document).ready(function($) {
                             self.loadUsers(1);
                         }
                     } else {
-                        $container.html(`<p class="error">${response.data.message}</p>`).attr('data-active-view', 'error');
+                        $container.empty().html(`<p class="error">${response.data.message}</p>`).css('opacity', '1').attr('data-active-view', 'error');
                     }
-                    $('.wshc-loading-overlay').fadeOut(100);
+                    $mainWrapper.find('.wshc-loading-overlay').fadeOut(150);
                 },
                 error: function() {
                     $container.html('<p class="error">Failed to load view.</p>').attr('data-active-view', 'error');
@@ -219,6 +224,8 @@ jQuery(document).ready(function($) {
         loadUsers: function(page) {
             const search = $('#wshc-user-search').val();
             const role = $('#wshc-role-filter').val();
+            const status = $('#wshc-status-filter').val();
+            const verified = $('#wshc-id-filter').val();
             const $tbody = $('#wshc-user-table tbody');
 
             $tbody.html('<tr><td colspan="5" style="text-align:center;">Loading users...</td></tr>');
@@ -231,6 +238,8 @@ jQuery(document).ready(function($) {
                     security: wshc_vars.nonce,
                     search: search,
                     role: role,
+                    status: status,
+                    verified: verified,
                     page: page
                 },
                 success: function(response) {

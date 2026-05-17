@@ -118,24 +118,31 @@ class WSHC_Dashboard {
 
 		$view = isset( $_POST['view'] ) ? sanitize_text_field( $_POST['view'] ) : 'overview';
 
-		// Strict Template Mapping
+		// Strict Template Mapping & Capability Guard
 		$template_map = array(
-			'overview'           => 'modules/overview',
-			'profile'            => 'modules/profile',
-			'credentials'        => 'modules/credentials',
-			'help'               => 'modules/help',
-			'scientific-reports' => 'modules/scientific-reports',
-			'board-resources'    => 'modules/board-resources',
-			'user-directory'     => 'modules/admin/user-list',
-			'system-logs'        => 'modules/admin/logs',
-			'global-settings'    => 'modules/admin/settings',
+			'overview'           => array( 'tpl' => 'modules/overview', 'cap' => 'read' ),
+			'profile'            => array( 'tpl' => 'modules/profile', 'cap' => 'read' ),
+			'credentials'        => array( 'tpl' => 'modules/credentials', 'cap' => 'read' ),
+			'help'               => array( 'tpl' => 'modules/help', 'cap' => 'read' ),
+			'scientific-reports' => array( 'tpl' => 'modules/scientific-reports', 'cap' => 'read' ),
+			'board-resources'    => array( 'tpl' => 'modules/board-resources', 'cap' => 'read' ),
+			'user-directory'     => array( 'tpl' => 'modules/admin/user-list', 'cap' => 'manage_wshc_users' ),
+			'system-logs'        => array( 'tpl' => 'modules/admin/logs', 'cap' => 'manage_wshc_users' ),
+			'global-settings'    => array( 'tpl' => 'modules/admin/settings', 'cap' => 'manage_wshc_users' ),
 		);
 
 		if ( ! isset( $template_map[ $view ] ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid view mapping.', 'wshc-membership' ) ) );
 		}
 
-		$template_path = $template_map[ $view ];
+        $config = $template_map[ $view ];
+
+        // Security Gate: Verify Capability for the specific module
+        if ( ! current_user_can( $config['cap'] ) ) {
+            wp_send_json_error( array( 'message' => __( 'Insufficient permissions for this module.', 'wshc-membership' ) ) );
+        }
+
+		$template_path = $config['tpl'];
 
 		ob_start();
 		$this->get_template( $template_path, array(
